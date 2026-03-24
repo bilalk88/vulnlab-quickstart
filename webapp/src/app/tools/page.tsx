@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { WrenchScrewdriverIcon } from '@heroicons/react/24/outline';
 
 export const metadata: Metadata = {
   title: 'Security Tools Reference | VulnLab Dashboard',
@@ -42,28 +41,30 @@ const SYS_TOOLS = [
 
 function ToolTable({ tools }: { tools: { name: string; desc: string; url?: string }[] }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-800">
+    <div className="overflow-hidden rounded-xl border" style={{ borderColor: 'var(--border-dim)', background: 'var(--bg-card)' }}>
       <table className="w-full text-sm">
         <thead>
-          <tr className="bg-gray-900 text-left">
-            <th className="px-4 py-3 font-semibold text-gray-400 w-40">Tool</th>
-            <th className="px-4 py-3 font-semibold text-gray-400">Description</th>
+          <tr className="text-left border-b" style={{ borderColor: 'var(--border-dim)', background: 'rgba(255,255,255,0.02)' }}>
+            <th className="px-5 py-3 font-mono text-[10px] tracking-widest text-[#7b8db0] w-48 font-semibold">BINARY / TOOL</th>
+            <th className="px-5 py-3 font-mono text-[10px] tracking-widest text-[#7b8db0] font-semibold">CAPABILITY</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-800">
+        <tbody className="divide-y" style={{ borderColor: 'var(--border-dim)' }}>
           {tools.map(t => (
-            <tr key={t.name} className="hover:bg-gray-900/40 transition">
-              <td className="px-4 py-3">
+            <tr key={t.name} className="hover:bg-white/[0.02] transition-colors">
+              <td className="px-5 py-3">
                 {t.url ? (
                   <a href={t.url} target="_blank" rel="noopener noreferrer"
-                    className="font-mono text-emerald-400 hover:text-emerald-300 transition">
-                    {t.name}
+                    className="font-mono text-[#00e5ff] hover:text-white transition-colors flex items-center gap-2">
+                    {t.name} <span className="opacity-50 text-[10px]">↗</span>
                   </a>
                 ) : (
-                  <span className="font-mono text-emerald-400">{t.name}</span>
+                  <span className="font-mono text-[#00e5ff]">{t.name}</span>
                 )}
               </td>
-              <td className="px-4 py-3 text-gray-400">{t.desc}</td>
+              <td className="px-5 py-3 text-[#7b8db0] text-xs">
+                {t.desc}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -72,51 +73,67 @@ function ToolTable({ tools }: { tools: { name: string; desc: string; url?: strin
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="space-y-3">
-      <h2 className="text-lg font-semibold text-white">{title}</h2>
-      {children}
-    </section>
-  );
-}
-
 export default function ToolsPage() {
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <WrenchScrewdriverIcon className="h-7 w-7 text-emerald-400" />
-        <div>
-          <h1 className="text-2xl font-bold text-white">Security Tools Reference</h1>
-          <p className="text-sm text-gray-500 mt-0.5">All tools installed by <code className="font-mono text-emerald-500">pentest-lab-setup.sh</code></p>
+      <div className="border-b pb-6" style={{ borderColor: 'var(--border-dim)' }}>
+        <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
+          <span className="text-[#00e5ff]">/</span> TOOL_INVENTORY
+        </h1>
+        <p className="text-sm font-mono mt-2" style={{ color: 'var(--text-secondary)' }}>
+          Installed packages and payloads from `pentest-lab-setup.sh`
+        </p>
+      </div>
+
+      {/* Quick commands box */}
+      <div className="rounded-xl border p-5 space-y-4 relative overflow-hidden" 
+        style={{ borderColor: 'var(--border-dim)', background: 'var(--bg-card)' }}>
+        
+        {/* Accent top edge */}
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#00ff88] to-transparent opacity-50" />
+        
+        <h2 className="text-xs font-mono font-bold tracking-widest" style={{ color: 'var(--text-muted)' }}>COMMON EXECUTION SNIPPETS</h2>
+        <div className="grid grid-cols-1 gap-2">
+          {[
+            { label: 'WAIT FOR REVERSE SHELL', cmd: 'nc -lvnp 4444' },
+            { label: 'SPAWN HTTP FILE SERVER', cmd: 'python3 -m http.server 8888' },
+            { label: 'LAB DOCKER STATUS',      cmd: 'cd ~/pentest-lab && docker compose ps' },
+            { label: 'UPDATE TEMPLATES',       cmd: 'nuclei -update-templates' },
+            { label: 'FUZZ DIRECTORIES',       cmd: 'ffuf -w wordlists/common.txt -u http://TARGET/FUZZ' },
+          ].map(({ label, cmd }) => (
+            <div key={cmd} className="flex flex-col sm:flex-row sm:items-center p-2 rounded bg-black/40 border border-[#1a2340]">
+              <span className="text-[10px] font-mono tracking-widest w-48 shrink-0 mb-1 sm:mb-0" style={{ color: '#7b8db0' }}>
+                {label}
+              </span>
+              <code className="font-mono text-[11px] px-3 py-1 bg-black rounded border border-[#1a2340] text-[#00ff88] flex-1 overflow-x-auto">
+                $ {cmd}
+              </code>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Quick commands */}
-      <div className="rounded-xl border border-gray-800 bg-gray-900/50 p-5 space-y-3">
-        <h2 className="text-sm font-semibold text-gray-300">Quick Commands</h2>
-        {[
-          { label: 'Reverse shell listener',     cmd: 'nc -lvnp 4444' },
-          { label: 'Quick Python file server',   cmd: 'python3 -m http.server 8888' },
-          { label: 'Check lab containers',       cmd: 'cd ~/pentest-lab && docker compose ps' },
-          { label: 'Update Nuclei templates',    cmd: 'nuclei -update-templates' },
-          { label: 'Subfinder example',          cmd: 'subfinder -d target.com -silent' },
-          { label: 'Nuclei scan',                cmd: 'nuclei -u http://localhost:8080 -severity medium,high,critical' },
-          { label: 'ffuf directory brute',       cmd: 'ffuf -w wordlists/common.txt -u http://localhost:8080/FUZZ' },
-        ].map(({ label, cmd }) => (
-          <div key={cmd} className="flex flex-col sm:flex-row sm:items-center gap-2">
-            <span className="text-xs text-gray-500 w-48 shrink-0">{label}</span>
-            <code className="font-mono text-xs bg-black/40 text-emerald-300 rounded-md px-3 py-1.5 border border-gray-800 flex-1">
-              {cmd}
-            </code>
-          </div>
-        ))}
-      </div>
+      <section className="space-y-4">
+        <h2 className="text-sm font-bold tracking-wider font-mono text-white flex items-center gap-2">
+          <span className="text-[#00ff88]">■</span> GO_LANG RECON MODULES
+        </h2>
+        <ToolTable tools={GO_TOOLS} />
+      </section>
 
-      <Section title="🐹 Go-based Recon Tools"><ToolTable tools={GO_TOOLS} /></Section>
-      <Section title="🐍 Python Tools"><ToolTable tools={PY_TOOLS} /></Section>
-      <Section title="🔧 System / APT Tools"><ToolTable tools={SYS_TOOLS} /></Section>
+      <section className="space-y-4">
+        <h2 className="text-sm font-bold tracking-wider font-mono text-white flex items-center gap-2">
+          <span className="text-[#ffcc00]">■</span> PYTHON_3 EXPLOIT MODULES
+        </h2>
+        <ToolTable tools={PY_TOOLS} />
+      </section>
+
+      <section className="space-y-4 mb-20">
+        <h2 className="text-sm font-bold tracking-wider font-mono text-white flex items-center gap-2">
+          <span className="text-[#ff4566]">■</span> SYSTEM / APT BINARIES
+        </h2>
+        <ToolTable tools={SYS_TOOLS} />
+      </section>
     </div>
   );
 }

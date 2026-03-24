@@ -14,12 +14,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${mono.variable}`}>
-      <body className="bg-gray-950 text-gray-100 min-h-screen font-sans antialiased">
+      <body className="antialiased">
         <NavBar />
         <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
-        <footer className="border-t border-gray-800 mt-16 py-6 text-center text-xs text-gray-600">
-          VulnLab Dashboard · For authorized security research &amp; education only ·{' '}
-          <span className="text-emerald-600">⚠ Do not use against systems you do not own</span>
+        <footer className="mt-16 py-6 text-center text-[10px] font-mono tracking-widest" style={{ color: 'var(--text-muted)' }}>
+          VULNLAB CONTROL SYSTEM · AUTHORIZED USE ONLY ·{' '}
+          <span className="text-[#ff4566]">⚠ DO NOT DEPLOY TO PUBLIC INTERNET</span>
         </footer>
       </body>
     </html>

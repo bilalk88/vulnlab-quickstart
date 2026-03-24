@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { BookOpenIcon } from '@heroicons/react/24/outline';
 
 export const metadata: Metadata = {
   title: 'Proxy Setup Guide | VulnLab Dashboard',
@@ -8,108 +7,104 @@ export const metadata: Metadata = {
 
 const steps = {
   burp: [
-    { step: 1, title: 'Install Burp Suite Community or Pro', body: 'Download from https://portswigger.net/burp. Community edition is free and sufficient for all lab exercises.' },
-    { step: 2, title: 'Set the proxy listener', body: 'Burp Suite → Proxy tab → Proxy settings → Listeners → ensure 127.0.0.1:8080 is active.' },
-    { step: 3, title: 'Configure your browser', body: 'Browser → Settings → Proxy → Manual: HTTP 127.0.0.1:8080. Firefox: use FoxyProxy extension for quick toggle.' },
-    { step: 4, title: 'Download & install the CA cert', body: 'Browse to http://burpsuite (while proxy is active) → download cacert.der → Browser Settings → Certificates → Import → pick cacert.der.' },
-    { step: 5, title: 'Intercept lab traffic', body: 'Turn intercept ON in Burp Proxy tab, then navigate to any lab (e.g., http://localhost:8080 for DVWA). Requests will appear in Burp.' },
-    { step: 6, title: 'Use FoxyProxy for easy toggling', body: 'Install FoxyProxy Standard in Firefox. Add a profile: Proxy type HTTP, host 127.0.0.1, port 8080. Toggle with one click.' },
+    { step: '01', title: 'INSTALL BURP SUITE',      body: 'Download Community Edition from portswigger.net/burp. Free tier is identical for web lab proxies.' },
+    { step: '02', title: 'CONFIGURE LISTENER',      body: 'Proxy tab → Proxy settings → Listeners → ensure 127.0.0.1:8080 is bound.' },
+    { step: '03', title: 'ROUTE BROWSER TRAFFIC',   body: 'Set browser manual proxy to HTTP 127.0.0.1:8080. Extension FoxyProxy recommended.' },
+    { step: '04', title: 'IMPORT CA CERTIFICATE',   body: 'With proxy on, browse to http://burpsuite → download cacert.der → import into browser trusted root CAs.' },
+    { step: '05', title: 'CAPTURING REQUESTS',      body: 'Enable "Intercept is on" in Proxy tab. Navigate to DVWA or WebGoat. Traffic will halt and appear in Burp.' },
   ],
   zap: [
-    { step: 1, title: 'Install OWASP ZAP', body: 'Download from https://www.zaproxy.org/ or install via apt: sudo apt install zaproxy.' },
-    { step: 2, title: 'Start ZAP & set listener port', body: 'ZAP GUI → Tools → Options → Local Proxies → Port: 8085 (to avoid conflict with Burp).' },
-    { step: 3, title: 'Configure browser proxy', body: 'Set browser proxy to 127.0.0.1:8085. Same FoxyProxy profile approach works — create a separate ZAP profile.' },
-    { step: 4, title: 'Install ZAP CA certificate', body: 'ZAP → Tools → Options → Dynamic SSL Certificates → Generate → Save. Import the saved cert into browser certificate store.' },
-    { step: 5, title: 'Use ZAP spider & active scan', body: 'Right-click a URL in ZAP Sites → Spider → then right-click → Active Scan for automated vulnerability detection.' },
+    { step: '01', title: 'INSTALL OWASP ZAP',       body: 'Download from zaproxy.org or install via system apt: `sudo apt install zaproxy`' },
+    { step: '02', title: 'BIND LISTENER PORT',      body: 'Tools → Options → Local Proxies → Set to Port 8085 (avoids 8080 conflict with apps & Burp).' },
+    { step: '03', title: 'ROUTE BROWSER TRAFFIC',   body: 'Set browser manual proxy to HTTP 127.0.0.1:8085. Use a dedicated FoxyProxy profile.' },
+    { step: '04', title: 'IMPORT CA CERTIFICATE',   body: 'Tools → Options → Dynamic SSL Certs → Generate → Save. Import into browser.' },
+    { step: '05', title: 'INITIALIZE SCAN',         body: 'HUD is active by default. Right-click target in Sites tree → Attack → Active Scan.' },
   ],
 };
 
-function StepList({ items }: { items: typeof steps.burp }) {
+function StepList({ items, color }: { items: typeof steps.burp, color: string }) {
   return (
-    <ol className="space-y-4">
-      {items.map(({ step, title, body }) => (
-        <li key={step} className="flex gap-4">
-          <div className="flex-shrink-0 flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/10 ring-1 ring-emerald-500/20 text-xs font-bold text-emerald-400">
-            {step}
+    <div className="space-y-[1px] bg-[#1a2340] rounded-xl overflow-hidden border border-[#1a2340]">
+      {items.map(({ step, title, body }, idx) => (
+        <div key={step} className="flex gap-4 p-5" style={{ background: 'var(--bg-card)' }}>
+          <div className="font-mono text-sm mt-0.5" style={{ color }}>
+            {step}.
           </div>
           <div>
-            <p className="text-sm font-semibold text-white">{title}</p>
-            <p className="text-sm text-gray-400 mt-0.5 leading-relaxed">{body}</p>
+            <h3 className="text-sm font-bold tracking-wide text-white mb-1.5">{title}</h3>
+            <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+              {body}
+            </p>
           </div>
-        </li>
+        </div>
       ))}
-    </ol>
-  );
-}
-
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-6 space-y-5">
-      <h2 className="text-lg font-semibold text-white">{title}</h2>
-      {children}
     </div>
   );
 }
 
 export default function ProxyGuidePage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-10 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <BookOpenIcon className="h-7 w-7 text-emerald-400" />
-        <div>
-          <h1 className="text-2xl font-bold text-white">Proxy Setup Guide</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
-            Configure Burp Suite or OWASP ZAP to intercept lab traffic
-          </p>
-        </div>
-      </div>
-
-      {/* Quick reference */}
-      <div className="rounded-xl border border-gray-800 bg-black/30 p-5">
-        <h2 className="text-sm font-semibold text-gray-300 mb-3">Port Quick Reference</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-          {[
-            { tool: 'Burp Suite', port: '8080', note: 'default' },
-            { tool: 'OWASP ZAP', port: '8085', note: 'recommended' },
-            { tool: 'DVWA Lab', port: '8080', note: '⚠ conflict with Burp' },
-            { tool: 'WebGoat Lab', port: '8081', note: '' },
-          ].map(r => (
-            <div key={r.tool} className="rounded-lg bg-gray-900 border border-gray-800 p-3">
-              <div className="text-emerald-400">{r.tool}</div>
-              <div className="text-white text-base font-bold">:{r.port}</div>
-              {r.note && <div className="text-amber-500 text-[10px] mt-1">{r.note}</div>}
-            </div>
-          ))}
-        </div>
-        <p className="mt-3 text-xs text-amber-400/80">
-          ⚠ DVWA runs on port 8080 — same as Burp default. Use port 8090 for Burp when attacking DVWA, or use ZAP on 8085.
+      <div className="border-b pb-6" style={{ borderColor: 'var(--border-dim)' }}>
+        <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
+          <span className="text-[#ff4566]">/</span> PROXY_ROUTING
+        </h1>
+        <p className="text-sm font-mono mt-2" style={{ color: 'var(--text-secondary)' }}>
+          HTTP/S interception configuration for external analysis tools.
         </p>
       </div>
 
-      {/* Browser command */}
-      <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-5 space-y-2">
-        <h2 className="text-sm font-semibold text-gray-300">Firefox with isolated proxy profile (recommended)</h2>
-        <code className="block font-mono text-xs bg-black/40 text-emerald-300 rounded-md px-4 py-3 border border-gray-800">
-          firefox --new-instance -P &quot;BurpLab&quot; --no-remote
+      {/* Port Conflicts Box */}
+      <div className="rounded-xl border p-5 relative overflow-hidden bg-red-950/20 border-red-900/40">
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-50" />
+        <h2 className="text-xs font-mono font-bold tracking-widest text-[#ff6b7a] mb-4">PORT COLLISION MATRIX</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+          {[
+            { tool: 'BURP SUITE', port: '8080', stat: 'DEFAULT' },
+            { tool: 'OWASP ZAP',  port: '8085', stat: 'MANUAL CFG' },
+            { tool: 'DVWA LAB',   port: '8080', stat: 'CONFLICT!' },
+            { tool: 'WEBGOAT',    port: '8081', stat: 'CLEAR' },
+          ].map(r => (
+            <div key={r.tool} className="rounded border bg-black/40 p-3" style={{ borderColor: r.stat === 'CONFLICT!' ? '#ff4566' : '#1a2340' }}>
+              <div style={{ color: 'var(--text-muted)' }} className="text-[10px] tracking-wider mb-1">{r.tool}</div>
+              <div className="text-sm font-bold text-white mb-2">:{r.port}</div>
+              <div className="text-[9px]" style={{ color: r.stat === 'CONFLICT!' ? '#ff6b7a' : '#00ff88' }}>[{r.stat}]</div>
+            </div>
+          ))}
+        </div>
+        <p className="mt-4 text-[11px] font-mono text-[#ffc66d] border-l-2 border-[#ffc66d] pl-3 py-0.5">
+          WARNING: DVWA binds to :8080. If Burp is on 8080, Docker will fail to start DVWA. Move Burp listener to 8090.
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8">
+        <div>
+          <h2 className="text-sm font-bold tracking-wider font-mono text-white flex items-center gap-2 mb-4">
+            <span className="text-[#ff7b00]">■</span> PORT_SWIGGER.BURP
+          </h2>
+          <StepList items={steps.burp} color="#ff7b00" />
+        </div>
+        <div>
+          <h2 className="text-sm font-bold tracking-wider font-mono text-white flex items-center gap-2 mb-4">
+            <span className="text-[#00e5ff]">■</span> OWASP.ZAP
+          </h2>
+          <StepList items={steps.zap} color="#00e5ff" />
+        </div>
+      </div>
+
+      {/* Firefox snippet */}
+      <div className="rounded-xl border p-5 flex flex-col sm:flex-row items-center gap-5" 
+        style={{ borderColor: 'var(--border-dim)', background: 'var(--bg-card)' }}>
+        <div className="flex-1 space-y-2">
+          <h3 className="text-xs font-mono font-bold text-white tracking-widest">ISOLATED BROWSER PROFILE</h3>
+          <p className="text-[11px] text-[#7b8db0]">
+            Use this command to launch Firefox in an isolated profile, keeping lab proxy traffic separate from your daily browsing.
+          </p>
+        </div>
+        <code className="font-mono text-[11px] bg-black text-[#00ff88] rounded p-3 border border-[#1a2340] w-full sm:w-auto overflow-x-auto shrink-0">
+          firefox --new-instance -P "BurpLab" --no-remote
         </code>
-        <p className="text-xs text-gray-500">Creates a separate Firefox profile for lab work — keeps your personal browser traffic out of Burp.</p>
-      </div>
-
-      <div className="grid sm:grid-cols-2 gap-6">
-        <Card title="🔴 Burp Suite Setup"><StepList items={steps.burp} /></Card>
-        <Card title="🟢 OWASP ZAP Setup"><StepList items={steps.zap} /></Card>
-      </div>
-
-      {/* Tips */}
-      <div className="rounded-xl border border-emerald-800/30 bg-emerald-900/10 p-5 space-y-2">
-        <h2 className="text-sm font-semibold text-emerald-400">💡 Pro Tips</h2>
-        <ul className="text-sm text-gray-400 space-y-1.5 list-disc list-inside">
-          <li>Use <span className="font-mono text-xs text-gray-300">Burp Repeater</span> to replay modified requests without re-intercepting.</li>
-          <li>In ZAP, use <span className="font-mono text-xs text-gray-300">HUD (Heads Up Display)</span> mode for in-browser security overlays.</li>
-          <li>Add <span className="font-mono text-xs text-gray-300">localhost</span> to your no-proxy exceptions when you don&apos;t want to route local traffic.</li>
-          <li>Use <span className="font-mono text-xs text-gray-300">Match and Replace</span> in Burp to auto-modify headers on every request.</li>
-        </ul>
       </div>
     </div>
   );
