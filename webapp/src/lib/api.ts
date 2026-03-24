@@ -1,7 +1,8 @@
 // API client for the Lab API Server (runs on Docker host, exposed via ngrok)
 // All calls include the Bearer token stored in env vars.
 
-const API_BASE = process.env.NEXT_PUBLIC_LAB_API_URL || 'http://localhost:4000';
+// If NEXT_PUBLIC_LAB_API_URL is empty, uses relative paths which triggers Next.js rewrites
+const API_BASE = process.env.NEXT_PUBLIC_LAB_API_URL || '';
 const API_SECRET = process.env.NEXT_PUBLIC_API_SECRET || 'changeme';
 
 function headers(): HeadersInit {
