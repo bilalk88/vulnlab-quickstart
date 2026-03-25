@@ -7,8 +7,8 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const mono  = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
 
 export const metadata: Metadata = {
-  title: 'VulnLab Dashboard | Pentest Lab Control Panel',
-  description: 'Centralized web dashboard to manage vulnerable lab containers for security training and penetration testing practice.',
+  title: 'PentestGround — Security Lab Manager',
+  description: 'Your all-in-one security lab dashboard. Manage, launch, and monitor vulnerable targets for hands-on penetration testing practice.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -16,10 +16,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${mono.variable}`}>
       <body className="antialiased">
         <NavBar />
-        <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
-        <footer className="mt-16 py-6 text-center text-[10px] font-mono tracking-widest" style={{ color: 'var(--text-muted)' }}>
-          VULNLAB CONTROL SYSTEM · AUTHORIZED USE ONLY ·{' '}
-          <span className="text-[#ff4566]">⚠ DO NOT DEPLOY TO PUBLIC INTERNET</span>
+        <main className="mx-auto max-w-screen-2xl px-6 py-7">{children}</main>
+        <footer className="mt-16 py-6 border-t" style={{ borderColor: 'var(--border-dim)' }}>
+          <div className="mx-auto max-w-screen-2xl px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <span className="text-[11px] font-mono tracking-widest" style={{ color: 'var(--text-muted)' }}>
+              PENTESTGROUND · SECURITY LAB MANAGER
+            </span>
+            <span className="text-[11px] font-mono" style={{ color: 'var(--accent-red)' }}>
+              ⚠ EDUCATIONAL USE ONLY — DO NOT DEPLOY TO PUBLIC INTERNET
+            </span>
+          </div>
         </footer>
       </body>
     </html>

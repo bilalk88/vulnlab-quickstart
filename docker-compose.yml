@@ -7,7 +7,7 @@ services:
     image: vulnerables/web-dvwa
     container_name: dvwa
     ports:
-      - "8080:80"
+      - "8088:80"
     restart: unless-stopped
 
   juice-shop:
@@ -21,7 +21,7 @@ services:
     image: webgoat/webgoat
     container_name: webgoat
     ports:
-      - "8081:8080"
+      - "8085:8080"
       - "9090:9090"
     restart: unless-stopped
 

@@ -30,8 +30,8 @@ const LABS = [
     name:         'DVWA',
     description:  'Damn Vulnerable Web Application – the classic PHP/MySQL training target.',
     category:     'Web App',
-    port:         8080,
-    url:          'http://localhost:8080',
+    port:         8088,
+    url:          'http://localhost:8088',
     setupPath:    '/setup.php',
     defaultCreds: { user: 'admin', password: 'password' },
     tags:         ['SQLi','XSS','CSRF','File Upload','Brute Force'],
@@ -51,8 +51,8 @@ const LABS = [
     name:         'WebGoat',
     description:  'OWASP WebGoat — deliberate insecure Java EE web application for learning.',
     category:     'Web App',
-    port:         8081,
-    url:          'http://localhost:8081/WebGoat',
+    port:         8085,
+    url:          'http://localhost:8085/WebGoat',
     defaultCreds: { user: '(self-register)', password: '' },
     tags:         ['SQL Injection','Path Traversal','XXE','JWT','IDOR'],
   },
@@ -225,6 +225,26 @@ app.get('/api/labs/:id', requireAuth, async (req, res) => {
   res.json({ ...lab, status });
 });
 
+// Start ALL labs
+app.post('/api/labs/all/start', requireAuth, async (_req, res) => {
+  try {
+    await dockerCompose(['up', '-d']);
+    res.json({ success: true, message: 'All labs started' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Stop ALL labs
+app.post('/api/labs/all/stop', requireAuth, async (_req, res) => {
+  try {
+    await dockerCompose(['stop']);
+    res.json({ success: true, message: 'All labs stopped' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Start a lab
 app.post('/api/labs/:id/start', requireAuth, async (req, res) => {
   const lab = LABS.find(l => l.id === req.params.id);
@@ -256,26 +276,6 @@ app.post('/api/labs/:id/restart', requireAuth, async (req, res) => {
   try {
     await dockerCompose(['restart', lab.id]);
     res.json({ success: true, message: `${lab.name} restarted` });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Start ALL labs
-app.post('/api/labs/all/start', requireAuth, async (_req, res) => {
-  try {
-    await dockerCompose(['up', '-d']);
-    res.json({ success: true, message: 'All labs started' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Stop ALL labs
-app.post('/api/labs/all/stop', requireAuth, async (_req, res) => {
-  try {
-    await dockerCompose(['stop']);
-    res.json({ success: true, message: 'All labs stopped' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
