@@ -79,7 +79,7 @@ export default function LogViewer({ lab, onClose }: LogViewerProps) {
               {lab.name.toUpperCase()}
             </span>
             <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-              // STD_OUT
+              {'// STD_OUT'}
             </span>
             {connected && (
               <span className="flex items-center gap-1.5 text-[10px] font-mono tracking-widest text-[#00ff88] px-2 py-0.5 rounded bg-[#00ff88]/10 border border-[#00ff88]/30 ml-2">

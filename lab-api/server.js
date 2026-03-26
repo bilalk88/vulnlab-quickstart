@@ -214,14 +214,9 @@ async function enrichLabsWithStatus(labList) {
 // ── App setup ─────────────────────────────────────────────────────────────────
 const app = express();
 
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: 'cross-origin' },
-}));
-
 app.use(cors({
   origin: '*',
-  methods: ['GET','POST','OPTIONS'],
-  allowedHeaders: ['Content-Type'],
+  methods: ['GET','POST','OPTIONS']
 }));
 
 app.use(express.json());

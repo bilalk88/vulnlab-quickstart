@@ -1,6 +1,8 @@
-# VulnLab Quickstart — Web Dashboard
+# VulnLab Control Center
 
-Interactive web dashboard to manage vulnerable Docker lab containers for security training.
+![VulnLab Control Center Dashboard](assets/dashboard-demo-final.webp)
+
+Professional web dashboard to manage vulnerable Docker lab containers, APIs, and AI/LLM training targets for security research.
 
 ## Team Quickstart (Windows)
 
@@ -46,6 +48,10 @@ That's it. The script handles everything automatically. Open **http://localhost:
 | OWASP Juice Shop | http://localhost:3001 |
 | WebGoat | http://localhost:8085 |
 | bWAPP | http://localhost:8082 |
+| vAPI | http://localhost:8086/vapi/ |
+| VAmPI | http://localhost:8087/ui/ |
+| crAPI | External (https://github.com/OWASP/crAPI) |
+| DVLLM | External (https://dvllm.com/) |
 | phpMyAdmin | http://localhost:8084 |
 | MySQL | localhost:3306 |
 | PostgreSQL | localhost:5432 |
