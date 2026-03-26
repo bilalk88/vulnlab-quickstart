@@ -1,171 +1,63 @@
-# VulnLab Dashboard — Walkthrough & Deployment Guide
+# PentestGround — Walkthrough & Deployment Guide
 
-## What Was Built
+## Project Vision & Architecture
 
-A full-stack web dashboard for managing vulnerable pentest lab containers, built on top of the existing [pentest-lab-setup.sh](file:///c:/Users/khanb/OneDrive/Documents/GitHub/vulnlab-quickstart/pentest-lab-setup.sh) script.
+**PentestGround** is a self-contained, automated security lab environment. It provides a professional "Command Center" dashboard to manage multiple vulnerable web applications and databases without having to interact directly with Docker Compose or CLI tools for every action.
 
-### Architecture
-
+### Portable Architecture
 ```
-Team Browser → Vercel (Next.js UI) → ngrok tunnel → Lab API Server → Docker Compose
+User Dashboard (WebApp) → Node.js Lab API (Port 4000) → Docker Compose (Labs)
 ```
+
+By default, the **Lab API** automatically detects its environment. If you run it from the cloned repository, it finds the `docker-compose.yml` in the parent directory instantly. No hardcoded absolute paths or complex environment setup required.
 
 ---
 
-## Project Structure
-
-```
-vulnlab-quickstart/
-├── pentest-lab-setup.sh        ← original setup script (unchanged)
-├── docker-compose.yml          ← committed compose file (used by lab-api)
-├── lab-api/
-│   ├── server.js               ← Express.js REST + SSE API server
-│   ├── package.json
-│   ├── .env.example
-│   └── start-with-ngrok.sh     ← one-shot launcher for API + ngrok tunnel
-└── webapp/                     ← Next.js 14 app (deployed to Vercel)
-    ├── src/
-    │   ├── app/
-    │   │   ├── page.tsx              ← Dashboard with lab cards grid
-    │   │   ├── tools/page.tsx        ← Security tools reference
-    │   │   └── proxy-guide/page.tsx  ← Burp/ZAP proxy setup guide
-    │   ├── components/
-    │   │   ├── NavBar.tsx            ← Sticky navbar
-    │   │   ├── LabCard.tsx           ← Lab card with start/stop/restart/logs
-    │   │   ├── StatusBadge.tsx       ← Animated status indicator
-    │   │   └── LogViewer.tsx         ← SSE live log terminal drawer
-    │   └── lib/
-    │       ├── labs.ts               ← Lab metadata + TypeScript types
-    │       └── api.ts                ← API client (calls lab-api over ngrok)
-    ├── .env.local.example
-    └── vercel.json
-```
-
----
-
-## Dashboard Features
+## Features Breakdown
 
 | Feature | Description |
 |---|---|
-| **Lab Cards Grid** | 10 labs shown as cards with status, tags, creds |
-| **Start / Stop / Restart** | One-click Docker container control per lab |
-| **Start All / Stop All** | Bulk actions in toolbar |
-| **Live Logs** | SSE-streamed terminal drawer per container |
-| **Status Badges** | Animated: Running 🟢 / Stopped ⚫ / Restarting 🟡 / Exited 🔴 |
-| **Category Filter** | Filter by Web App / Database |
-| **Stats Hero** | Live count of running/stopped/unknown labs |
-| **API Health Indicator** | Shows if lab-api is reachable from Vercel |
-| **Tools Reference** | All Go/Python/system tools installed by setup script |
-| **Proxy Guide** | Burp Suite + ZAP setup steps with port conflict warnings |
+| **One-Click Control** | Start, stop, or restart any lab from a high-performance grid UI. |
+| **Log Streaming** | Real-time terminal logs delivered to the UI for immediate feedback. |
+| **Animated Status** | Visual badges that reflect the live state of every Docker container. |
+| **Security Toolkit** | Searchable database of installed Go, Python, and system tools. |
+| **Proxy Guide** | Interactive guide for setting up Burp Suite and OWASP ZAP locally. |
 
 ---
 
-## Build Verification
+## Quick Deployment (Local/Portable)
 
-```
-✓ Next.js build: exit code 0
-✓ Routes compiled: / (dashboard), /tools, /proxy-guide
-✓ TypeScript: no errors
-✓ heroicons installed
-✓ Browser walkthrough: all 3 pages load correctly
-✓ API-unreachable warning shows as designed (expected when lab-api not running)
+### Step 1 — Start the Stack
+The simplest way to start the entire application is to use the included `start.bat` (Windows) or start the processes manually.
+
+**From the project root:**
+```bash
+# Start backend
+cd lab-api && npm install && node server.js
+
+# Start frontend (New terminal)
+cd webapp && npm install && npm run dev
 ```
 
-![VulnLab Dashboard Recording](file:///C:/Users/khanb/.gemini/antigravity/brain/a297e6ba-162f-46a6-b4c3-2aa3489850bf/vulnlab_dashboard_demo_1774350630184.webp)
+### Step 2 — Configuration (Zero-Token)
+The application is pre-configured to work out of the box. 
+
+1. **LAB_DIR:** Automatically detected as the parent of the `lab-api` folder.
+2. **API_SECRET:** Authentication is disabled in portable mode to simplify team access.
+3. **API_BASE:** Defaults to `localhost:4000` for a seamless local experience.
 
 ---
 
-## Deployment Guide
+## Verification Checklist
 
-### Step 1 — Prepare the Docker host machine (Linux)
-
-The lab machine must be a Linux box with Docker installed. This can be:
-- Your own Linux laptop/desktop
-- A cloud VPS (DigitalOcean, AWS EC2, etc.)
-- A local VM
-
-```bash
-# Clone the repo
-git clone https://github.com/<your-username>/vulnlab-quickstart.git
-cd vulnlab-quickstart
-
-# Copy the docker-compose.yml to ~/pentest-lab
-mkdir -p ~/pentest-lab
-cp docker-compose.yml ~/pentest-lab/
-
-# Install Node.js (if not present)
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
-
-# Install ngrok
-curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc
-echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
-sudo apt update && sudo apt install -y ngrok
-```
-
-### Step 2 — Configure the Lab API Server
-
-```bash
-cd lab-api
-npm install
-cp .env.example .env
-# Edit .env:
-#   API_SECRET=<strong_random_string>   ← choose something random!
-#   LAB_DIR=/root/pentest-lab           ← or wherever docker-compose.yml lives
-nano .env
-```
-
-### Step 3 — Start the API server + ngrok tunnel
-
-```bash
-NGROK_AUTHTOKEN=<your_ngrok_token> bash start-with-ngrok.sh
-```
-
-The script will print:
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ✅  VulnLab API is LIVE at:
-      https://abc123.ngrok-free.app
-  Set: NEXT_PUBLIC_LAB_API_URL=https://abc123.ngrok-free.app
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-Copy the ngrok URL — needed for the next step.
-
-### Step 4 — Deploy the webapp to Vercel
-
-```bash
-cd webapp
-
-# Install Vercel CLI
-npm install -g vercel
-
-# Deploy
-vercel --prod
-```
-
-During deploy, set these environment variables in the Vercel dashboard (or with `vercel env add`):
-
-| Variable | Value |
-|---|---|
-| `NEXT_PUBLIC_LAB_API_URL` | `https://abc123.ngrok-free.app` (your ngrok URL) |
-| `NEXT_PUBLIC_API_SECRET` | Same value as `API_SECRET` in `lab-api/.env` |
-
-### Step 5 — Share the Vercel URL
-
-Give team members the Vercel URL. They can:
-- View live container status
-- Start/stop/restart any lab with one click
-- Stream live container logs in-browser
-- Reference tools and proxy setup guides
+- [ ] All 3 pages (Dashboard, Tools, Proxy) load at `localhost:3000`.
+- [ ] Clicking "Start" on a lab initiates the Docker container.
+- [ ] Live log drawer opens and displays real-time container output.
+- [ ] Status badges change from ⚫ (Stopped) to 🟡 (Restarting) to 🟢 (Running).
 
 ---
 
-## Notes
+> [!NOTE]
+> For production deployments (e.g., VPS), you can still override the `LAB_DIR` and `NEXT_PUBLIC_LAB_API_URL` environment variables in your `.env` or Vercel dashboard.
 
-> **ngrok free tier**: The public URL changes every time the tunnel restarts.  
-> Update `NEXT_PUBLIC_LAB_API_URL` in Vercel when this happens.  
-> Upgrade to ngrok paid plan for a static domain to avoid this.
-
-> **Security**: Keep `API_SECRET` strong and secret. Do not commit `.env` files.
-> Consider adding IP allowlisting in production.
+*Last Updated: 2026*

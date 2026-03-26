@@ -20,8 +20,7 @@ const fs        = require('fs');
 require('dotenv').config();
 
 const PORT       = process.env.PORT       || 4000;
-const API_SECRET = process.env.API_SECRET || 'changeme';
-const LAB_DIR    = process.env.LAB_DIR    || path.join(process.env.HOME || '/root', 'pentest-lab');
+const LAB_DIR    = process.env.LAB_DIR    || path.join(__dirname, '..');
 
 // ── Lab manifest (mirrors docker-compose.yml) ─────────────────────────────────
 const LABS = [
@@ -190,12 +189,8 @@ app.use(cors({
 
 app.use(express.json());
 
-// Auth middleware
+// Auth middleware (Disabled as per user request to simplify)
 function requireAuth(req, res, next) {
-  const auth = req.headers['authorization'] || '';
-  if (auth !== `Bearer ${API_SECRET}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
   next();
 }
 
@@ -318,5 +313,5 @@ app.listen(PORT, () => {
   console.log(`\n🔐 VulnLab API Server`);
   console.log(`   Listening on  : http://localhost:${PORT}`);
   console.log(`   Lab directory : ${LAB_DIR}`);
-  console.log(`   Auth token    : ${API_SECRET === 'changeme' ? '⚠️  default (change me!)' : '✅ set'}\n`);
+  console.log(`   Auth          : 🔓 Disabled (portable mode)\n`);
 });

@@ -1,14 +1,12 @@
-// API client for the Lab API Server (runs on Docker host, exposed via ngrok)
+// API client for the Lab API Server
 // All calls include the Bearer token stored in env vars.
 
 // If NEXT_PUBLIC_LAB_API_URL is empty, uses relative paths which triggers Next.js rewrites
 const API_BASE = process.env.NEXT_PUBLIC_LAB_API_URL || '';
-const API_SECRET = process.env.NEXT_PUBLIC_API_SECRET || 'changeme';
 
 function headers(): HeadersInit {
   return {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${API_SECRET}`,
   };
 }
 
