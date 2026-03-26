@@ -1,8 +1,8 @@
-# PentestGround — Walkthrough & Deployment Guide
+# VulnLab Control Center — Walkthrough & Deployment Guide
 
 ## Project Vision & Architecture
 
-**PentestGround** is a self-contained, automated security lab environment. It provides a professional "Command Center" dashboard to manage multiple vulnerable web applications and databases without having to interact directly with Docker Compose or CLI tools for every action.
+**VulnLab Control Center** is a self-contained, automated security lab environment. It provides a professional "Command Center" dashboard to manage multiple vulnerable web applications and databases without having to interact directly with Docker Compose or CLI tools for every action.
 
 ### Portable Architecture
 ```

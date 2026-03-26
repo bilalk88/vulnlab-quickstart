@@ -1,103 +1,76 @@
-# 🔐 PentestGround (formerly vulnlab-quickstart)
+# VulnLab Quickstart — Web Dashboard
 
-> **Portable. Automated. Powerful.**  
-> A self-contained, Docker-based penetration testing environment and management dashboard. Spin up labs, monitor status, and stream logs—no complex configuration required.
+Interactive web dashboard to manage vulnerable Docker lab containers for security training.
 
----
+## Team Quickstart (Windows)
 
-## 🚀 Quick Start (Portable Mode)
+```powershell
+# 1. Clone the repo
+git clone https://github.com/YOUR_USERNAME/vulnlab-quickstart.git
+cd vulnlab-quickstart
 
-The application is now fully portable and requires zero-token configuration for local use.
-
-### 1. Prerequisites
-- **Windows / Linux / macOS**
-- **Docker & Docker Compose**
-- **Node.js 20+**
-
-### 2. Start the Application
-Simply run the included batch file (Windows) or start the components manually:
-
-**Windows:**
-```batch
-.\start.bat
+# 2. Run the setup script (first time — installs dependencies, starts everything)
+PowerShell -ExecutionPolicy Bypass -File .\setup.ps1
 ```
 
-**Manual (Linux/macOS):**
-```bash
-# 1. Start the Backend API
-cd lab-api && npm install && npm run dev
+That's it. The script handles everything automatically. Open **http://localhost:3000** when it finishes.
 
-# 2. Start the Web Dashboard (New Terminal)
-cd webapp && npm install && npm run dev
+---
+
+## What the Setup Script Does
+
+| Step | What it does |
+|------|--------------|
+| Checks prereqs | Verifies `node`, `npm`, and `docker` are installed |
+| Creates `.env` files | Auto-generates config without hardcoded paths |
+| `npm install` | Installs dependencies for both `lab-api` and `webapp` |
+| `docker compose up -d` | Pulls and starts all vulnerable lab containers |
+| Starts Lab API | `node lab-api/server.js` on port 4100 |
+| Starts Dashboard | `npm run dev` in `webapp/` on port 3000 |
+
+---
+
+## Prerequisites
+
+- [Node.js 20+](https://nodejs.org)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+---
+
+## Lab Ports
+
+| Lab | URL |
+|-----|-----|
+| Dashboard | http://localhost:3000 |
+| DVWA | http://localhost:8088 |
+| OWASP Juice Shop | http://localhost:3001 |
+| WebGoat | http://localhost:8085 |
+| bWAPP | http://localhost:8082 |
+| phpMyAdmin | http://localhost:8084 |
+| MySQL | localhost:3306 |
+| PostgreSQL | localhost:5432 |
+| MongoDB | localhost:27017 |
+| Redis | localhost:6379 |
+
+---
+
+## Project Structure
+
+```
+vulnlab-quickstart/
+├── setup.ps1                   ← Run this first (Windows)
+├── docker-compose.yml          ← All vulnerable lab containers
+├── lab-api/
+│   ├── server.js               ← Express API that controls Docker
+│   └── .env.example            ← Config template (auto-copied by setup.ps1)
+└── webapp/
+    ├── src/
+    │   ├── app/page.tsx         ← Main dashboard
+    │   ├── components/          ← LabCard, LogViewer, NavBar, StatusBadge
+    │   └── lib/                 ← API client + lab metadata
+    └── next.config.ts           ← Next.js (proxies /api to lab-api)
 ```
 
-The Dashboard will be live at **http://localhost:3000**.
-
 ---
 
-## 📖 Project Overview
-
-**PentestGround** is designed for security teams and researchers who need a reliable, isolated environment for practicing penetration testing. It bridges the gap between raw Docker commands and a professional management interface.
-
-### The Problem it Solves
-Managing multiple vulnerable containers (DVWA, Juice Shop, etc.) usually requires juggling multiple terminals, port numbers, and `docker-compose` commands. PentestGround provides a **centralized Command Center** to control everything with one click.
-
-### Architecture
-- **Web Dashboard (Next.js 14):** A premium, dark-themed UI for lab management.
-- **Lab API (Node.js/Express):** A lightweight controller that auto-detects your `docker-compose.yml` and wraps Docker commands into a REST API.
-- **Docker Stack:** 10+ industry-standard vulnerable apps and databases running in isolated containers.
-
----
-
-## ✨ Key Features
-
-### 🎮 Lab Management
-- **One-Click Control:** Start, stop, or restart any lab container instantly.
-- **Bulk Actions:** "Start All" or "Stop All" labs with a single click.
-- **Live Status:** Real-time animated status badges (Running 🟢, Stopped ⚫, Transitioning 🟡).
-- **Auto-Discovery:** The API automatically finds your labs by looking for the `docker-compose.yml` in the parent directory.
-
-### 📜 Real-Time Monitoring
-- **Live Log Stream:** Integrated terminal drawer that streams container logs directly to your browser using Server-Sent Events (SSE).
-- **Health Checks:** Visual indicators showing the connectivity between the Dashboard and the Lab API.
-
-### 🛠️ Integrated Security Toolkit
-- **Tools Reference:** A categorized guide to 20+ pre-installed tools (nmap, nuclei, sqlmap, etc.) including purpose and usage examples.
-- **Proxy Guide:** Built-in walkthrough for configuring Burp Suite and OWASP ZAP, including CA certificate installation.
-
-### 📂 Portable & User-Friendly
-- **Zero-Token Setup:** No more API secrets to manage for local deployments.
-- **Portable Paths:** Uses relative path detection so you can run it from any folder.
-
----
-
-## 🧪 Included Labs
-
-| Lab App | Category | Purpose |
-|---|---|---|
-| **DVWA** | Web App | Classic PHP/MySQL vulnerabilities (SQLi, XSS) |
-| **Juice Shop** | Web App | Modern JS/Angular app (JWT flaws, NoSQLi) |
-| **WebGoat** | Web App | Guided Java EE security lessons |
-| **bWAPP** | Web App | 100+ vulnerabilities for broad practice |
-| **Hackazon** | Web App | Complex e-commerce logic testing |
-| **MySQL / Postgres**| Database | Practice DB exploitation and injection |
-| **MongoDB / Redis** | NoSQL | Unauthenticated access & data leakage tests |
-
----
-
-## 🛠️ Port Reference
-
-- **Dashboard:** `3000`
-- **Lab API:** `4000`
-- **DVWA:** `8080`
-- **Juice Shop:** `3000` (internal)
-- **WebGoat:** `8081`
-- **phpMyAdmin:** `8084`
-
----
-
-> [!IMPORTANT]
-> **Educational Use Only.**  
-> This project is strictly for authorized security testing and learning. Never expose these vulnerable containers to the public internet.
-
-*Maintained by the Security Team · 2026*
+> **⚠️ For educational use only.** Do not expose these containers to the public internet.

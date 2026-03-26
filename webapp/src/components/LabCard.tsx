@@ -165,10 +165,17 @@ export default function LabCard({ lab, onRefresh }: LabCardProps) {
             Logs
           </button>
 
+          {isRunning && lab.setupPath && (
+            <a href={`${lab.url}${lab.setupPath}`} target="_blank" rel="noopener noreferrer"
+               className="btn btn-ghost ml-auto !text-yellow-400 !border-yellow-900/50 hover:!bg-yellow-900/20 px-3">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-1.5 inline-block"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              Setup DB
+            </a>
+          )}
+
           {isRunning && lab.category === 'Web App' && (
             <a href={lab.url} target="_blank" rel="noopener noreferrer"
-               onClick={(e) => { e.preventDefault(); window.open(lab.url, '_blank'); }}
-               className="btn btn-violet ml-auto">
+               className={`btn btn-violet ${!lab.setupPath ? 'ml-auto' : ''}`}>
               Open ↗
             </a>
           )}

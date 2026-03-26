@@ -26,7 +26,7 @@ export default function NavBar() {
   const path = usePathname();
   return (
     <header className="navbar">
-      <div className="mx-auto flex max-w-screen-2xl items-center h-14 px-6 gap-8">
+      <div className="mx-auto flex max-w-7xl items-center h-14 px-6 gap-8">
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 no-underline shrink-0">
@@ -41,7 +41,7 @@ export default function NavBar() {
           </div>
           <div>
             <div className="text-[14px] font-bold tracking-tight leading-none" style={{ color: '#f1f5f9' }}>
-              Pentest<span className="text-gradient-violet">Ground</span>
+              Vuln<span className="text-gradient-violet">Lab</span>
             </div>
             <div className="text-[10px] tracking-widest uppercase mt-0.5" style={{ color: 'var(--text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>
               Security Lab Manager

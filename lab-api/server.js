@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 /**
  * VulnLab API Server
- * Wraps Docker Compose to give the Vercel dashboard live control over lab containers.
- * Runs on the same host machine as Docker.
+ * Wraps Docker Compose to provide live container control to the local dashboard.
+ * Runs on the same host machine as Docker — no authentication required (local use only).
  *
- * Auth: Bearer token via API_SECRET env var
  * All routes: /api/*
  */
 
@@ -15,12 +14,11 @@ const cors      = require('cors');
 const helmet    = require('helmet');
 const { execFile, spawn } = require('child_process');
 const path      = require('path');
-const fs        = require('fs');
 
 require('dotenv').config();
 
-const PORT       = process.env.PORT       || 4000;
-const LAB_DIR    = process.env.LAB_DIR    || path.join(__dirname, '..');
+const PORT    = process.env.PORT    || 4100;
+const LAB_DIR = process.env.LAB_DIR || path.join(__dirname, '..');
 
 // ── Lab manifest (mirrors docker-compose.yml) ─────────────────────────────────
 const LABS = [
@@ -40,8 +38,8 @@ const LABS = [
     name:         'OWASP Juice Shop',
     description:  'Modern intentionally insecure Node.js/Angular e-commerce app covering OWASP Top 10.',
     category:     'Web App',
-    port:         3000,
-    url:          'http://localhost:3000',
+    port:         3001,
+    url:          'http://localhost:3001',
     defaultCreds: { user: '(self-register)', password: '' },
     tags:         ['SQLi','XSS','Broken Auth','IDOR','XXE'],
   },
@@ -182,27 +180,22 @@ app.use(helmet({
 }));
 
 app.use(cors({
-  origin: '*',   // Lock down to your Vercel domain in production
+  origin: '*',
   methods: ['GET','POST','OPTIONS'],
-  allowedHeaders: ['Content-Type','Authorization'],
+  allowedHeaders: ['Content-Type'],
 }));
 
 app.use(express.json());
 
-// Auth middleware (Disabled as per user request to simplify)
-function requireAuth(req, res, next) {
-  next();
-}
-
 // ── Routes ────────────────────────────────────────────────────────────────────
 
-// Health check (no auth needed)
+// Health check
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', labDir: LAB_DIR, timestamp: new Date().toISOString() });
 });
 
 // List all labs with live status
-app.get('/api/labs', requireAuth, async (_req, res) => {
+app.get('/api/labs', async (_req, res) => {
   try {
     const labs = await enrichLabsWithStatus(LABS);
     res.json(labs);
@@ -212,7 +205,7 @@ app.get('/api/labs', requireAuth, async (_req, res) => {
 });
 
 // Single lab status
-app.get('/api/labs/:id', requireAuth, async (req, res) => {
+app.get('/api/labs/:id', async (req, res) => {
   const lab = LABS.find(l => l.id === req.params.id);
   if (!lab) return res.status(404).json({ error: 'Lab not found' });
   const containerName = CONTAINER_NAMES[lab.id] || lab.id;
@@ -221,7 +214,7 @@ app.get('/api/labs/:id', requireAuth, async (req, res) => {
 });
 
 // Start ALL labs
-app.post('/api/labs/all/start', requireAuth, async (_req, res) => {
+app.post('/api/labs/all/start', async (_req, res) => {
   try {
     await dockerCompose(['up', '-d']);
     res.json({ success: true, message: 'All labs started' });
@@ -231,7 +224,7 @@ app.post('/api/labs/all/start', requireAuth, async (_req, res) => {
 });
 
 // Stop ALL labs
-app.post('/api/labs/all/stop', requireAuth, async (_req, res) => {
+app.post('/api/labs/all/stop', async (_req, res) => {
   try {
     await dockerCompose(['stop']);
     res.json({ success: true, message: 'All labs stopped' });
@@ -241,7 +234,7 @@ app.post('/api/labs/all/stop', requireAuth, async (_req, res) => {
 });
 
 // Start a lab
-app.post('/api/labs/:id/start', requireAuth, async (req, res) => {
+app.post('/api/labs/:id/start', async (req, res) => {
   const lab = LABS.find(l => l.id === req.params.id);
   if (!lab) return res.status(404).json({ error: 'Lab not found' });
   try {
@@ -253,7 +246,7 @@ app.post('/api/labs/:id/start', requireAuth, async (req, res) => {
 });
 
 // Stop a lab
-app.post('/api/labs/:id/stop', requireAuth, async (req, res) => {
+app.post('/api/labs/:id/stop', async (req, res) => {
   const lab = LABS.find(l => l.id === req.params.id);
   if (!lab) return res.status(404).json({ error: 'Lab not found' });
   try {
@@ -265,7 +258,7 @@ app.post('/api/labs/:id/stop', requireAuth, async (req, res) => {
 });
 
 // Restart a lab
-app.post('/api/labs/:id/restart', requireAuth, async (req, res) => {
+app.post('/api/labs/:id/restart', async (req, res) => {
   const lab = LABS.find(l => l.id === req.params.id);
   if (!lab) return res.status(404).json({ error: 'Lab not found' });
   try {
@@ -277,7 +270,7 @@ app.post('/api/labs/:id/restart', requireAuth, async (req, res) => {
 });
 
 // Live log streaming (Server-Sent Events)
-app.get('/api/labs/:id/logs', requireAuth, (req, res) => {
+app.get('/api/labs/:id/logs', (req, res) => {
   const lab = LABS.find(l => l.id === req.params.id);
   if (!lab) return res.status(404).json({ error: 'Lab not found' });
 
@@ -313,5 +306,5 @@ app.listen(PORT, () => {
   console.log(`\n🔐 VulnLab API Server`);
   console.log(`   Listening on  : http://localhost:${PORT}`);
   console.log(`   Lab directory : ${LAB_DIR}`);
-  console.log(`   Auth          : 🔓 Disabled (portable mode)\n`);
+  console.log(`   Auth          : none (local lab mode)\n`);
 });
