@@ -6,17 +6,17 @@ export interface LabCredentials {
   password: string;
 }
 
-export type LabStatus = 'running' | 'stopped' | 'restarting' | 'exited' | 'unknown';
+export type LabStatus = 'running' | 'stopped' | 'restarting' | 'exited' | 'unknown' | 'external';
 
 export interface Lab {
   id: string;
   name: string;
   description: string;
-  category: 'Web App' | 'Database';
-  port: number;
+  category: 'Web App' | 'Database' | 'API Labs' | 'AI/LLM';
+  port?: number;
   url: string;
   setupPath?: string;
-  defaultCreds: LabCredentials;
+  defaultCreds?: LabCredentials;
   tags: string[];
   status?: LabStatus;
 }
@@ -75,6 +75,42 @@ export const LABS: Lab[] = [
     tags: ['SQLi', 'SSRF', 'Business Logic', 'IDOR'],
   },
   {
+    id: 'vapi',
+    name: 'vAPI',
+    description: 'Vulnerable API (vAPI) — highly interactive API security training ground based on OWASP API Top 10.',
+    category: 'API Labs',
+    port: 8086,
+    url: 'http://localhost:8086/vapi/',
+    tags: ['API Security', 'BOLA', 'BFLA', 'Mass Assignment'],
+  },
+  {
+    id: 'vampi',
+    name: 'VAmPI',
+    description: 'Vulnerable API based on Flask. Includes OpenAPI spec and intentionally vulnerable endpoints.',
+    category: 'API Labs',
+    port: 8087,
+    url: 'http://localhost:8087/ui/',
+    tags: ['API Security', 'Injection', 'Broken Auth'],
+  },
+  {
+    id: 'crapi',
+    name: 'crAPI (OWASP)',
+    description: 'Completely Ridiculous API — complex microservice architecture designed to teach API security.',
+    category: 'API Labs',
+    url: 'https://github.com/OWASP/crAPI',
+    tags: ['API Security', 'Microservices', 'GraphQL'],
+    status: 'external',
+  },
+  {
+    id: 'dvllm',
+    name: 'DVLLM',
+    description: 'Damn Vulnerable LLM — exploring vulnerabilities in Large Language Models (Prompt Injection, Exfiltration).',
+    category: 'AI/LLM',
+    url: 'https://dvllm.com/',
+    tags: ['LLM Security', 'Prompt Injection', 'AI'],
+    status: 'external',
+  },
+  {
     id: 'phpmyadmin',
     name: 'phpMyAdmin',
     description: 'Web UI for the MySQL test database.',
@@ -129,4 +165,6 @@ export const LABS: Lab[] = [
 export const CATEGORY_COLORS: Record<string, string> = {
   'Web App': 'emerald',
   'Database': 'sky',
+  'API Labs': 'fuchsia',
+  'AI/LLM': 'purple',
 };

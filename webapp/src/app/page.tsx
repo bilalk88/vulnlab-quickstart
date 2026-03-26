@@ -11,7 +11,7 @@ export default function DashboardPage() {
   const [labs, setLabs] = useState<LabWithStatus[]>([]);
   const [health, setHealth] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'Web App' | 'Database'>('all');
+  const [filter, setFilter] = useState<'all' | 'Web App' | 'Database' | 'API Labs' | 'AI/LLM'>('all');
   const [bulkMsg, setBulkMsg] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
 
@@ -157,9 +157,9 @@ export default function DashboardPage() {
 
         {/* Filter + Action Tabs */}
         <div className="tab-bar">
-          {(['all', 'Web App', 'Database'] as const).map(f => (
-            <button key={f} onClick={() => setFilter(f)}
-              className={`tab-btn${filter === f ? ' active' : ''}`}>
+          {['all', 'Web App', 'Database', 'API Labs', 'AI/LLM'].map(f => (
+            <button key={f} onClick={() => setFilter(f as any)}
+                    className={`tab-btn ${filter === f ? 'active' : ''}`}>
               {f === 'all' ? 'All Labs' : f}
             </button>
           ))}

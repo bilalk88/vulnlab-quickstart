@@ -39,12 +39,7 @@ services:
       - "8083:80"
     restart: unless-stopped
 
-  # ── Test Databases ─────────────────────────────────────────────────────────
-  mysql:
-    image: mysql:5.7
-    container_name: mysql-test
-    environment:
-      MYSQL_ROOT_PASSWORD: root
+  vapi:
       MYSQL_DATABASE: testdb
     ports:
       - "3306:3306"
@@ -83,3 +78,7 @@ services:
     ports:
       - "6379:6379"
     restart: unless-stopped
+
+networks:
+  lab_net:
+    external: true

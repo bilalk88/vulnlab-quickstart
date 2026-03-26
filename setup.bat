@@ -24,7 +24,13 @@ REM ── 1. Preflight checks ────────────────�
 echo [CHECK] Verifying prerequisites...
 where node >nul 2>&1 || (echo   ERROR: Node.js not found. Install from https://nodejs.org && exit /b 1)
 where npm  >nul 2>&1 || (echo   ERROR: npm not found. Install from https://nodejs.org && exit /b 1)
-where docker >nul 2>&1 || (echo   ERROR: Docker not found. Install Docker Desktop from https://docker.com && exit /b 1)
+REM Check Docker status and create network
+docker info >nul 2>&1
+if !errorlevel! neq 0 (
+    echo   ERROR: Docker is not running or not installed. Install Docker Desktop from https://docker.com && exit /b 1
+)
+echo   Docker is running.
+docker network create lab_net >nul 2>&1
 
 for /f "tokens=*" %%v in ('node --version') do echo   Node  : %%v
 for /f "tokens=*" %%v in ('npm --version')  do echo   npm   : %%v

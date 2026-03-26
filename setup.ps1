@@ -122,6 +122,17 @@ $ApiProcess = Start-Process -FilePath "node" -ArgumentList "server.js" `
     -PassThru -NoNewWindow -WorkingDirectory $LabApiDir
 Start-Sleep -Seconds 2
 
+# Check Docker and create network
+try {
+    $null = docker info 2>&1
+    if ($LASTEXITCODE -ne 0) { throw "Docker not running" }
+    Write-Host "[OK] Docker is running." -ForegroundColor Green
+    $null = docker network create lab_net 2>&1
+} catch {
+    Write-Host "[ERROR] Docker is not running or not installed." -ForegroundColor Red
+    exit 1
+}
+
 try {
     Invoke-WebRequest -Uri "http://localhost:4100/api/health" -UseBasicParsing -ErrorAction Stop | Out-Null
     Write-Host "  Lab API is UP (PID: $($ApiProcess.Id))" -ForegroundColor Green

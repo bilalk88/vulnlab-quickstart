@@ -75,6 +75,42 @@ const LABS = [
     tags:         ['SQLi','SSRF','Business Logic','IDOR'],
   },
   {
+    id:           'vapi',
+    name:         'vAPI',
+    description:  'Vulnerable API based on OWASP API Top 10.',
+    category:     'API Labs',
+    port:         8086,
+    url:          'http://localhost:8086/vapi/',
+    tags:         ['API Security'],
+  },
+  {
+    id:           'vampi',
+    name:         'VAmPI',
+    description:  'Vulnerable API based on Flask.',
+    category:     'API Labs',
+    port:         8087,
+    url:          'http://localhost:8087/ui/',
+    tags:         ['API Security'],
+  },
+  {
+    id:           'crapi',
+    name:         'crAPI (OWASP)',
+    description:  'Completely Ridiculous API.',
+    category:     'API Labs',
+    url:          'https://github.com/OWASP/crAPI',
+    tags:         ['API Security'],
+    status:       'external',
+  },
+  {
+    id:           'dvllm',
+    name:         'DVLLM',
+    description:  'Damn Vulnerable LLM testing framework.',
+    category:     'AI/LLM',
+    url:          'https://github.com/harishsg993010/DamnVulnerableLLMProject',
+    tags:         ['LLM Security'],
+    status:       'external',
+  },
+  {
     id:           'phpmyadmin',
     name:         'phpMyAdmin',
     description:  'Web UI for the MySQL test database.',
@@ -133,6 +169,8 @@ const CONTAINER_NAMES = {
   webgoat:     'webgoat',
   bwapp:       'bwapp',
   hackazon:    'hackazon',
+  vapi:        'vapi',
+  vampi:       'vampi',
   phpmyadmin:  'phpmyadmin',
   mysql:       'mysql-test',
   postgres:    'postgres-test',
@@ -143,7 +181,7 @@ const CONTAINER_NAMES = {
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function dockerCompose(args) {
   return new Promise((resolve, reject) => {
-    execFile('docker', ['compose', ...args], { cwd: LAB_DIR }, (err, stdout, stderr) => {
+    execFile('docker', ['compose', ...args], { cwd: LAB_DIR, maxBuffer: 1024 * 1024 * 50 }, (err, stdout, stderr) => {
       if (err) return reject(new Error(stderr || err.message));
       resolve(stdout.trim());
     });
@@ -165,6 +203,7 @@ async function getContainerStatus(containerId) {
 async function enrichLabsWithStatus(labList) {
   return Promise.all(
     labList.map(async (lab) => {
+      if (lab.status === 'external') return lab;
       const containerName = CONTAINER_NAMES[lab.id] || lab.id;
       const status = await getContainerStatus(containerName);
       return { ...lab, status };
@@ -208,6 +247,8 @@ app.get('/api/labs', async (_req, res) => {
 app.get('/api/labs/:id', async (req, res) => {
   const lab = LABS.find(l => l.id === req.params.id);
   if (!lab) return res.status(404).json({ error: 'Lab not found' });
+  if (lab.status === 'external') return res.json(lab);
+  
   const containerName = CONTAINER_NAMES[lab.id] || lab.id;
   const status = await getContainerStatus(containerName);
   res.json({ ...lab, status });

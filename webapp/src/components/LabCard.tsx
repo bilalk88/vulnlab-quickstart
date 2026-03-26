@@ -24,12 +24,25 @@ const CATEGORY_ICON: Record<string, React.ReactNode> = {
       <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
     </svg>
   ),
+  'API Labs': (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+    </svg>
+  ),
+  'AI/LLM': (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+       <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+    </svg>
+  ),
 };
 
 const CARD_COLOR: Record<string, { color: string; bg: string; border: string }> = {
-  'card-web':    { color: '#10b981', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)' },
-  'card-db':     { color: '#7c6ff7', bg: 'rgba(124,111,247,0.08)', border: 'rgba(124,111,247,0.2)' },
-  'card-danger': { color: '#ef4444', bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)' },
+  'card-web':      { color: '#10b981', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)' },
+  'card-db':       { color: '#7c6ff7', bg: 'rgba(124,111,247,0.08)', border: 'rgba(124,111,247,0.2)' },
+  'card-danger':   { color: '#ef4444', bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)' },
+  'card-external': { color: '#a855f7', bg: 'rgba(168,85,247,0.08)', border: 'rgba(168,85,247,0.2)' },
+  'card-api':      { color: '#f472b6', bg: 'rgba(244,114,182,0.08)', border: 'rgba(244,114,182,0.2)' },
 };
 
 export default function LabCard({ lab, onRefresh }: LabCardProps) {
@@ -42,6 +55,9 @@ export default function LabCard({ lab, onRefresh }: LabCardProps) {
 
   let cardClass = 'card-web';
   if (lab.category === 'Database') cardClass = 'card-db';
+  if (lab.category === 'API Labs') cardClass = 'card-api';
+  if (lab.category === 'AI/LLM' || status === 'external') cardClass = 'card-external';
+  
   if (lab.id === 'dvwa' || lab.id === 'bwapp') cardClass = 'card-danger';
   const theme = CARD_COLOR[cardClass];
 
@@ -81,7 +97,7 @@ export default function LabCard({ lab, onRefresh }: LabCardProps) {
                   style={{ background: theme.bg, color: theme.color, border: `1px solid ${theme.border}`, letterSpacing: '0.05em' }}>
                   {lab.category}
                 </span>
-                <span className="text-[11px] font-mono" style={{ color: 'var(--text-muted)' }}>:{lab.port}</span>
+                {lab.port && <span className="text-[11px] font-mono" style={{ color: 'var(--text-muted)' }}>:{lab.port}</span>}
               </div>
             </div>
           </div>
@@ -105,7 +121,7 @@ export default function LabCard({ lab, onRefresh }: LabCardProps) {
           </div>
 
           {/* Credentials */}
-          {(lab.defaultCreds.user || lab.defaultCreds.password) && (
+          {lab.defaultCreds && (lab.defaultCreds.user || lab.defaultCreds.password) && (
             <div className="flex items-center gap-3 rounded-xl px-4 py-3"
               style={{ background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.06)' }}>
               <span className="text-sm">🔑</span>
@@ -143,27 +159,36 @@ export default function LabCard({ lab, onRefresh }: LabCardProps) {
         {/* ── Footer ── */}
         <div className="px-4 py-3.5 flex flex-wrap gap-2 items-center"
           style={{ borderTop: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.15)' }}>
-          {!isRunning ? (
-            <button onClick={() => handleAction(() => startLab(lab.id))} className="btn btn-start">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              Start
-            </button>
+          
+          {status !== 'external' ? (
+            <>
+              {!isRunning ? (
+                <button onClick={() => handleAction(() => startLab(lab.id))} className="btn btn-start">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  Start
+                </button>
+              ) : (
+                <button onClick={() => handleAction(() => stopLab(lab.id))} className="btn btn-stop">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+                  Stop
+                </button>
+              )}
+
+              <button onClick={() => handleAction(() => restartLab(lab.id))} className="btn btn-ghost">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                Restart
+              </button>
+
+              <button onClick={() => setShowLogs(true)} className="btn btn-ghost">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                Logs
+              </button>
+            </>
           ) : (
-            <button onClick={() => handleAction(() => stopLab(lab.id))} className="btn btn-stop">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
-              Stop
-            </button>
+             <span className="text-[11px] font-medium opacity-70 tracking-wide uppercase px-2" style={{ color: theme.color }}>
+               External Resource
+             </span>
           )}
-
-          <button onClick={() => handleAction(() => restartLab(lab.id))} className="btn btn-ghost">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-            Restart
-          </button>
-
-          <button onClick={() => setShowLogs(true)} className="btn btn-ghost">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-            Logs
-          </button>
 
           {isRunning && lab.setupPath && (
             <a href={`${lab.url}${lab.setupPath}`} target="_blank" rel="noopener noreferrer"
@@ -173,7 +198,7 @@ export default function LabCard({ lab, onRefresh }: LabCardProps) {
             </a>
           )}
 
-          {isRunning && lab.category === 'Web App' && (
+          {((isRunning && (lab.category === 'Web App' || lab.category === 'API Labs')) || status === 'external') && (
             <a href={lab.url} target="_blank" rel="noopener noreferrer"
                className={`btn btn-violet ${!lab.setupPath ? 'ml-auto' : ''}`}>
               Open ↗

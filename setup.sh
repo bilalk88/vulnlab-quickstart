@@ -25,7 +25,13 @@ echo ""
 echo "[CHECK] Verifying prerequisites..."
 
 command -v node   &>/dev/null || { echo "  ERROR: Node.js not found. Install from https://nodejs.org"; exit 1; }
-command -v npm    &>/dev/null || { echo "  ERROR: npm not found. Install Node.js from https://nodejs.org"; exit 1; }
+command -v npm    &>/dev/null || { echo "  ERROR: npm not found. Install Node.js from https://nodejs.org"; exit 1;# Check Docker
+if ! docker info >/dev/null 2>&1; then
+    echo -e "${RED}[ERROR] Docker is not running or not installed.${NC}"
+    exit 1
+fi
+echo -e "${GREEN}[OK] Docker is running.${NC}"
+docker network create lab_net >/dev/null 2>&1 || true; }
 command -v docker &>/dev/null || { echo "  ERROR: Docker not found. Install Docker Desktop from https://docker.com"; exit 1; }
 
 echo "  Node   : $(node --version)"
