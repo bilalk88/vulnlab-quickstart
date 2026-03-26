@@ -8,10 +8,10 @@ import { fetchLabs, startAllLabs, stopAllLabs } from '@/lib/api';
 type LabWithStatus = Lab & { status: string };
 
 export default function DashboardPage() {
-  const [labs, setLabs]       = useState<LabWithStatus[]>([]);
-  const [health, setHealth]   = useState<boolean | null>(null);
+  const [labs, setLabs] = useState<LabWithStatus[]>([]);
+  const [health, setHealth] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter]   = useState<'all' | 'Web App' | 'Database'>('all');
+  const [filter, setFilter] = useState<'all' | 'Web App' | 'Database'>('all');
   const [bulkMsg, setBulkMsg] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
 
@@ -53,34 +53,42 @@ export default function DashboardPage() {
     }
   }
 
-  const filtered     = labs.filter(l => filter === 'all' || l.category === filter);
+  const filtered = labs.filter(l => filter === 'all' || l.category === filter);
   const runningCount = labs.filter(l => l.status === 'running').length;
   const stoppedCount = labs.filter(l => ['stopped', 'exited'].includes(l.status)).length;
 
   const stats = [
-    { label: 'Total Targets', val: labs.length,  color: '#8b78ff', glow: 'rgba(139,120,255,0.18)', icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-        <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
-      </svg>
-    )},
-    { label: 'Running',        val: runningCount, color: '#22c55e', glow: 'rgba(34,197,94,0.18)', icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4V8z" fill="currentColor"/>
-      </svg>
-    )},
-    { label: 'Stopped',        val: stoppedCount, color: '#f87171', glow: 'rgba(248,113,113,0.14)', icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <circle cx="12" cy="12" r="10"/><rect x="9" y="9" width="6" height="6" rx="1" fill="currentColor"/>
-      </svg>
-    )},
-    { label: 'System Health',  val: health === null ? '…' : health ? 'Online' : 'Offline',
+    {
+      label: 'Total Targets', val: labs.length, color: '#8b78ff', glow: 'rgba(139,120,255,0.18)', icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" />
+        </svg>
+      )
+    },
+    {
+      label: 'Running', val: runningCount, color: '#22c55e', glow: 'rgba(34,197,94,0.18)', icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4V8z" fill="currentColor" />
+        </svg>
+      )
+    },
+    {
+      label: 'Stopped', val: stoppedCount, color: '#f87171', glow: 'rgba(248,113,113,0.14)', icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <circle cx="12" cy="12" r="10" /><rect x="9" y="9" width="6" height="6" rx="1" fill="currentColor" />
+        </svg>
+      )
+    },
+    {
+      label: 'System Health', val: health === null ? '…' : health ? 'Online' : 'Offline',
       color: health ? '#22c55e' : '#f87171', glow: health ? 'rgba(34,197,94,0.14)' : 'rgba(248,113,113,0.08)', icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M12 2 3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z"/>
-        <path d="m9 12 2 2 4-4" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    )},
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M12 2 3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" />
+          <path d="m9 12 2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )
+    },
   ];
 
   return (
@@ -92,8 +100,8 @@ export default function DashboardPage() {
           style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.18)' }}>
           <div className="shrink-0 mt-0.5 p-2 rounded-lg" style={{ background: 'rgba(239,68,68,0.1)' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
           </div>
           <div>
@@ -110,7 +118,7 @@ export default function DashboardPage() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <div className="h-px flex-1 max-w-[40px]" style={{ background: 'linear-gradient(90deg,#7c6ff7,transparent)' }} />
-            <span className="text-[11px] font-mono tracking-[0.2em] uppercase" style={{ color: '#7c6ff7' }}>Security Operations</span>
+            <span className="text-[11px] font-mono tracking-[0.2em] uppercase" style={{ color: '#7c6ff7' }}>Security Test Labs</span>
           </div>
           <h1 className="text-4xl font-black tracking-tight leading-none" style={{ color: '#f1f5f9' }}>
             Lab <span className="text-gradient-violet">Dashboard</span>
@@ -156,22 +164,22 @@ export default function DashboardPage() {
             </button>
           ))}
           <div className="tab-divider" />
-          
+
           {(() => {
             const allRunning = labs.length > 0 && runningCount === labs.length;
             const action = allRunning ? stopAllLabs : startAllLabs;
-            const color  = allRunning ? '#f87171' : '#22c55e';
-            const bg     = allRunning ? 'rgba(248,113,113,0.08)' : 'rgba(34,197,94,0.08)';
+            const color = allRunning ? '#f87171' : '#22c55e';
+            const bg = allRunning ? 'rgba(248,113,113,0.08)' : 'rgba(34,197,94,0.08)';
             const border = allRunning ? 'rgba(248,113,113,0.2)' : 'rgba(34,197,94,0.2)';
-            
+
             return (
               <button onClick={() => handleBulk(action)} disabled={isPending}
                 className="tab-btn flex items-center gap-2"
                 style={{ color: isPending ? 'var(--text-muted)' : color, background: bg, border: `1px solid ${border}` }}>
                 {allRunning ? (
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1" /></svg>
                 ) : (
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
                 )}
                 {isPending ? (allRunning ? 'Stopping…' : 'Starting…') : (allRunning ? 'Stop All' : 'Start All')}
               </button>
@@ -183,9 +191,11 @@ export default function DashboardPage() {
         <div className="flex items-center gap-3">
           {bulkMsg && (
             <span className="text-xs font-medium px-3 py-1.5 rounded-full"
-              style={{ color: bulkMsg.startsWith('✓') ? '#22c55e' : '#f87171',
+              style={{
+                color: bulkMsg.startsWith('✓') ? '#22c55e' : '#f87171',
                 background: bulkMsg.startsWith('✓') ? 'rgba(34,197,94,0.1)' : 'rgba(248,113,113,0.1)',
-                border: `1px solid ${bulkMsg.startsWith('✓') ? 'rgba(34,197,94,0.2)' : 'rgba(248,113,113,0.2)'}` }}>
+                border: `1px solid ${bulkMsg.startsWith('✓') ? 'rgba(34,197,94,0.2)' : 'rgba(248,113,113,0.2)'}`
+              }}>
               {bulkMsg}
             </span>
           )}
