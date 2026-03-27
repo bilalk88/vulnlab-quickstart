@@ -2,7 +2,6 @@ version: '3.8'
 
 services:
 
-  # ── Vulnerable Web Apps ────────────────────────────────────────────────────
   dvwa:
     image: vulnerables/web-dvwa
     container_name: dvwa
@@ -39,7 +38,20 @@ services:
       - "8083:80"
     restart: unless-stopped
 
-  vapi:
+  vampi:
+    image: erev0s/vampi:latest
+    container_name: vampi
+    ports:
+      - "8087:5000"
+    restart: unless-stopped
+
+  # ── Test Databases ─────────────────────────────────────────────────────────
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql-test
+    environment:
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: testdb
     ports:
       - "3306:3306"

@@ -79,9 +79,9 @@ export const LABS: Lab[] = [
     name: 'vAPI',
     description: 'Vulnerable API (vAPI) — highly interactive API security training ground based on OWASP API Top 10.',
     category: 'API Labs',
-    port: 8086,
-    url: 'http://localhost:8086/vapi/',
+    url: 'http://vapi.apisec.ai/',
     tags: ['API Security', 'BOLA', 'BFLA', 'Mass Assignment'],
+    status: 'external',
   },
   {
     id: 'vampi',

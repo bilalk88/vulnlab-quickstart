@@ -79,9 +79,9 @@ const LABS = [
     name:         'vAPI',
     description:  'Vulnerable API based on OWASP API Top 10.',
     category:     'API Labs',
-    port:         8086,
-    url:          'http://localhost:8086/vapi/',
+    url:          'http://vapi.apisec.ai/',
     tags:         ['API Security'],
+    status:       'external',
   },
   {
     id:           'vampi',

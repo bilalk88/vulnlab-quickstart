@@ -48,7 +48,7 @@ That's it. The script handles everything automatically. Open **http://localhost:
 | OWASP Juice Shop | http://localhost:3001 |
 | WebGoat | http://localhost:8085 |
 | bWAPP | http://localhost:8082 |
-| vAPI | http://localhost:8086/vapi/ |
+| vAPI | External (http://vapi.apisec.ai/) |
 | VAmPI | http://localhost:8087/ui/ |
 | crAPI | External (https://github.com/OWASP/crAPI) |
 | DVLLM | External (https://dvllm.com/) |
