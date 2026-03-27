@@ -97,7 +97,7 @@ export const LABS: Lab[] = [
     name: 'crAPI (OWASP)',
     description: 'Completely Ridiculous API — complex microservice architecture designed to teach API security.',
     category: 'API Labs',
-    url: 'https://github.com/OWASP/crAPI',
+    url: 'http://crapi.apisec.ai/login',
     tags: ['API Security', 'Microservices', 'GraphQL'],
     status: 'external',
   },
