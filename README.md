@@ -1,7 +1,7 @@
 # 🚀 VulnLab Control Center
 
 <p align="center">
-  <img src="assets/dashboard_demo.png" alt="VulnLab Dashboard Demo" width="100%" />
+  <img src="assets/dashboard_walkthrough.webp" alt="VulnLab Dashboard Walkthrough" width="100%" />
 </p>
 
 A professional, high-performance security lab manager for Docker-based vulnerable applications. This "Command Center" allows security researchers to deploy, monitor, and interact with lab environments without writing a single line of CLI code after setup.
