@@ -1,8 +1,18 @@
 # 🚀 VulnLab Control Center
 
-![VulnLab Control Center Dashboard]
+![VulnLab Dashboard Demo](assets/dashboard_demo.webp)
 
 A professional, high-performance security lab manager for Docker-based vulnerable applications. This "Command Center" allows security researchers to deploy, monitor, and interact with lab environments without writing a single line of CLI code after setup.
+
+> [!NOTE]
+> This application is specifically designed to help learners and professionals understand **Web (Injection, XSS)**, **API (OWASP Top 10 API)**, and **LLM (AI/Prompt Injection)** security vulnerabilities in a safe, controlled environment.
+
+---
+
+## 🛑 Before You Start
+Ensure you have the following installed and running:
+* **Node.js 20+**
+* **Docker Desktop** (Must be running for labs to start)
 
 ---
 
@@ -10,11 +20,14 @@ A professional, high-performance security lab manager for Docker-based vulnerabl
 
 To bring the **Command Center** and all labs online, follow these simple steps:
 
-### 1. Launch the Lab Target Stack
+### 1. Launch the Lab Target Stack (One-Shot)
+To start **all** 10+ vulnerable applications and databases instantly, use the **Start All** button in the dashboard or run:
 ```bash
-# Start all 10+ vulnerable applications & databases
 docker compose up -d
 ```
+
+### 2. Manual Control (Individual Labs)
+You can also start each application individually from the dashboard by clicking the "Start" button on its respective card.
 
 ### 2. Start the Lab Controller (API)
 ```bash
