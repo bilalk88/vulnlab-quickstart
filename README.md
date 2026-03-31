@@ -79,8 +79,8 @@ cd webapp && npm install && npm run dev
 | Hackazon | http://localhost:8083 | (self-register) |
 | VAmPI | http://localhost:8087/ui/ | — |
 | vAPI | External (http://vapi.apisec.ai/) | — |
-| crAPI | External (https://github.com/OWASP/crAPI) | — |
-| DVLLM | External (https://github.com/harishsg993010/DamnVulnerableLLMProject) | — |
+| crAPI | External (http://crapi.apisec.ai/login) | — |
+| DVLLM | External (https://dvllm.com/) | — |
 | phpMyAdmin | http://localhost:8084 | root / root |
 | MySQL | localhost:3306 | root / root |
 | PostgreSQL | localhost:5432 | postgres / postgres |
