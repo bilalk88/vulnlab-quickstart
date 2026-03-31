@@ -134,8 +134,8 @@ The application is pre-configured to work out of the box. No tokens or API keys 
 | **Hackazon** | http://localhost:8083 | (self-register) |
 | **VAmPI** | http://localhost:8087/ui/ | — |
 | **vAPI** | http://vapi.apisec.ai/ | External |
-| **crAPI** | https://github.com/OWASP/crAPI | External |
-| **DVLLM** | https://github.com/harishsg993010/DamnVulnerableLLMProject | External |
+| **crAPI** | http://crapi.apisec.ai/login | External |
+| **DVLLM** | https://dvllm.com/ | External |
 | **phpMyAdmin** | http://localhost:8084 | root / root |
 | **MySQL** | localhost:3306 | root / root |
 | **PostgreSQL** | localhost:5432 | postgres / postgres |
