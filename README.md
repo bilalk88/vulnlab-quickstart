@@ -1,87 +1,125 @@
-# 🚀 VulnLab Control Center
+# VulnLab Control Center
 
-<p align="center">
-  <img src="assets/dashboard_walkthrough.webp" alt="VulnLab Dashboard Walkthrough" width="100%" />
-</p>
+Professional web dashboard to manage vulnerable Docker lab containers, APIs, and AI/LLM training targets for security research.
 
-A professional, high-performance security lab manager for Docker-based vulnerable applications. This "Command Center" allows security researchers to deploy, monitor, and interact with lab environments without writing a single line of CLI code after setup.
-
-> [!NOTE]
-> This application is specifically designed to help learners and professionals understand **Web (Injection, XSS)**, **API (OWASP Top 10 API)**, and **LLM (AI/Prompt Injection)** security vulnerabilities in a safe, controlled environment.
+> **⚠️ For educational use only.** Do not expose these containers to the public internet.
 
 ---
 
-## 🛑 Before You Start
-Ensure you have the following installed and running:
-* **Node.js 20+**
-* **Docker Desktop** (Must be running for labs to start)
+## Quick Start
 
----
+### Prerequisites
 
-## ⚡ Manual Quickstart
+- [Node.js 20+](https://nodejs.org)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-To bring the **Command Center** and all labs online, follow these simple steps:
+### Option 1 — Automated Setup (Recommended)
 
-### 1. Launch the Lab Target Stack (One-Shot)
-To start **all** 10+ vulnerable applications and databases instantly, use the **Start All** button in the dashboard or run:
-```bash
-docker compose up -d
+**Windows (Command Prompt):**
+```cmd
+git clone https://github.com/bilalk88/vulnlab-quickstart.git
+cd vulnlab-quickstart
+setup.bat
 ```
 
-### 2. Manual Control (Individual Labs)
-You can also start each application individually from the dashboard by clicking the "Start" button on its respective card.
-
-### 2. Start the Lab Controller (API)
-```bash
-cd lab-api
-npm install
-node server.js
+**Windows (PowerShell):**
+```powershell
+git clone https://github.com/bilalk88/vulnlab-quickstart.git
+cd vulnlab-quickstart
+PowerShell -ExecutionPolicy Bypass -File .\setup.ps1
 ```
 
-### 3. Launch the Professional Web Dashboard
+**Linux / macOS:**
 ```bash
-# In a new terminal
-cd webapp
-npm install
-npm run dev
+git clone https://github.com/bilalk88/vulnlab-quickstart.git
+cd vulnlab-quickstart
+chmod +x setup.sh && ./setup.sh
 ```
 
-**🌐 Access Dashboard**: [http://localhost:3000](http://localhost:3000)
+That's it. The script handles everything automatically. Open **http://localhost:3000** when it finishes.
+
+### Option 2 — Quick Launch (Already Set Up)
+
+If you've already run the setup once, just double-click **`start.bat`** (Windows) or run the servers manually:
+
+```bash
+# Terminal 1 — Lab API
+cd lab-api && npm install && node server.js
+
+# Terminal 2 — Dashboard
+cd webapp && npm install && npm run dev
+```
 
 ---
 
-## 🧬 Project Architecture
+## What the Setup Scripts Do
 
-| Component | Responsibility | Port |
-|-----------|----------------|------|
-| **Vulnerable Labs** | 10+ Dockerized targets (DVWA, Juice Shop, etc.) | Varies |
-| **Lab API (Backend)** | Controls Docker containers & streams logs | 4100 |
-| **Command Center (UI)**| Premium dashboard for lab orchestration | 3000 |
-
----
-
-## 🧭 Lab Fleet (Auto-Integrated)
-
-The following labs are pre-configured and can be managed directly from the dashboard:
-
-- **Web Apps**: DVWA, OWASP Juice Shop, WebGoat, bWAPP, Hackazon
-- **APIs**: vAPI (External), VAmPI, crAPI (External)
-- **AI/LLM**: DVLLM (External)
-- **Databases**: MySQL, PostgreSQL, MongoDB, Redis
+| Step | What it does |
+|------|--------------|
+| Checks prereqs | Verifies `node`, `npm`, and `docker` are installed |
+| Creates `.env` files | Auto-generates config without hardcoded paths |
+| `npm install` | Installs dependencies for both `lab-api` and `webapp` |
+| `docker compose up -d` | Pulls and starts all vulnerable lab containers |
+| Starts Lab API | `node lab-api/server.js` on port 4100 |
+| Starts Dashboard | `npm run dev` in `webapp/` on port 3000 |
 
 ---
 
-## 🏗️ Folder Structure
+## Lab Ports
+
+| Lab | URL | Default Credentials |
+|-----|-----|---------------------|
+| Dashboard | http://localhost:3000 | — |
+| DVWA | http://localhost:8088 | admin / password |
+| OWASP Juice Shop | http://localhost:3001 | (self-register) |
+| WebGoat | http://localhost:8085 | (self-register) |
+| bWAPP | http://localhost:8082 | bee / bug |
+| Hackazon | http://localhost:8083 | (self-register) |
+| VAmPI | http://localhost:8087/ui/ | — |
+| vAPI | External (http://vapi.apisec.ai/) | — |
+| crAPI | External (https://github.com/OWASP/crAPI) | — |
+| DVLLM | External (https://github.com/harishsg993010/DamnVulnerableLLMProject) | — |
+| phpMyAdmin | http://localhost:8084 | root / root |
+| MySQL | localhost:3306 | root / root |
+| PostgreSQL | localhost:5432 | postgres / postgres |
+| MongoDB | localhost:27017 | — |
+| Redis | localhost:6379 | — |
+
+---
+
+## Project Structure
+
 ```
 vulnlab-quickstart/
-├── docker-compose.yml     ← The lab definition file
-├── lab-api/               ← The Express.js control server
-└── webapp/                ← The Next.js dashboard UI
+├── start.bat                   ← Quick launcher (Windows, double-click)
+├── setup.bat                   ← Full first-time setup (Windows CMD)
+├── setup.ps1                   ← Full first-time setup (Windows PowerShell)
+├── setup.sh                    ← Full first-time setup (Linux/macOS)
+├── docker-compose.yml          ← All vulnerable lab containers
+├── package.json                ← Root scripts (npm start runs both servers)
+├── lab-api/
+│   ├── server.js               ← Express API that controls Docker
+│   ├── .env.example            ← Config template (auto-copied by setup scripts)
+│   └── .env                    ← Your local config (auto-created)
+└── webapp/
+    ├── src/
+    │   ├── app/page.tsx         ← Main dashboard page
+    │   ├── components/          ← LabCard, LogViewer, NavBar, StatusBadge
+    │   └── lib/                 ← API client + lab metadata
+    └── next.config.ts           ← Next.js config (proxies /api to lab-api)
 ```
 
 ---
 
-> [!CAUTION]
-> **LEGAL & SECURITY NOTICE**: This project is for **authorized security research** only. These containers contain real vulnerabilities. Do NOT host these apps publicly. Use only in your local localhost network.
+## Troubleshooting
 
-*Built for Security Research, 2026.*
+| Problem | Solution |
+|---------|----------|
+| `node` or `npm` not found | Install Node.js 20+ from [nodejs.org](https://nodejs.org) |
+| `docker` not found | Install Docker Desktop and make sure it's running |
+| Port already in use | Stop the conflicting app or change the port in `lab-api/.env` |
+| Dashboard can't connect to API | Make sure Lab API is running on port 4100 |
+
+---
+
+> 📖 For a detailed walkthrough including architecture, features, and verification checklist, see [HowToStart.md](./HowToStart.md).

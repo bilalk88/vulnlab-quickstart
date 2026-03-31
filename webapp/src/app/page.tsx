@@ -54,14 +54,12 @@ export default function DashboardPage() {
   }
 
   const filtered = labs.filter(l => filter === 'all' || l.category === filter);
-  const managedLabs = labs.filter(l => l.status !== 'external');
-  const runningCount = managedLabs.filter(l => l.status === 'running').length;
-  const stoppedCount = managedLabs.filter(l => ['stopped', 'exited'].includes(l.status)).length;
-  const totalManaged = managedLabs.length;
+  const runningCount = labs.filter(l => l.status === 'running').length;
+  const stoppedCount = labs.filter(l => ['stopped', 'exited'].includes(l.status)).length;
 
   const stats = [
     {
-      label: 'Total Labs', val: labs.length, color: '#8b78ff', glow: 'rgba(139,120,255,0.18)', icon: (
+      label: 'Total Targets', val: labs.length, color: '#8b78ff', glow: 'rgba(139,120,255,0.18)', icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
           <rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" />
@@ -168,11 +166,11 @@ export default function DashboardPage() {
           <div className="tab-divider" />
 
           {(() => {
-            const allRunning = totalManaged > 0 && runningCount === totalManaged;
+            const allRunning = labs.length > 0 && runningCount === labs.length;
             const action = allRunning ? stopAllLabs : startAllLabs;
             const color = allRunning ? '#f87171' : '#22c55e';
-            const bg = allRunning ? 'rgba(248,113,113,0.1)' : 'rgba(34,197,94,0.1)';
-            const border = allRunning ? 'rgba(248,113,113,0.3)' : 'rgba(34,197,94,0.3)';
+            const bg = allRunning ? 'rgba(248,113,113,0.08)' : 'rgba(34,197,94,0.08)';
+            const border = allRunning ? 'rgba(248,113,113,0.2)' : 'rgba(34,197,94,0.2)';
 
             return (
               <button onClick={() => handleBulk(action)} disabled={isPending}
