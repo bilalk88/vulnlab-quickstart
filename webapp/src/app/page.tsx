@@ -166,22 +166,22 @@ export default function DashboardPage() {
           <div className="tab-divider" />
 
           {(() => {
-            const allRunning = labs.length > 0 && runningCount === labs.length;
-            const action = allRunning ? stopAllLabs : startAllLabs;
-            const color = allRunning ? '#f87171' : '#22c55e';
-            const bg = allRunning ? 'rgba(248,113,113,0.08)' : 'rgba(34,197,94,0.08)';
-            const border = allRunning ? 'rgba(248,113,113,0.2)' : 'rgba(34,197,94,0.2)';
+            const isAnyRunning = runningCount > 0;
+            const action = isAnyRunning ? stopAllLabs : startAllLabs;
+            const color = isAnyRunning ? '#f87171' : '#22c55e';
+            const bg = isAnyRunning ? 'rgba(248,113,113,0.08)' : 'rgba(34,197,94,0.08)';
+            const border = isAnyRunning ? 'rgba(248,113,113,0.2)' : 'rgba(34,197,94,0.2)';
 
             return (
               <button onClick={() => handleBulk(action)} disabled={isPending}
                 className="tab-btn flex items-center gap-2"
                 style={{ color: isPending ? 'var(--text-muted)' : color, background: bg, border: `1px solid ${border}` }}>
-                {allRunning ? (
+                {isAnyRunning ? (
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1" /></svg>
                 ) : (
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
                 )}
-                {isPending ? (allRunning ? 'Stopping…' : 'Starting…') : (allRunning ? 'Stop All' : 'Start All')}
+                {isPending ? (isAnyRunning ? 'Stopping…' : 'Starting…') : (isAnyRunning ? 'Stop All' : 'Start All')}
               </button>
             );
           })()}

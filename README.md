@@ -1,5 +1,7 @@
 # VulnLab Control Center
 
+![VulnLab Control Center Dashboard](./assets/dashboard_walkthrough.webp)
+
 Professional web dashboard to manage vulnerable Docker lab containers, APIs, and AI/LLM training targets for security research.
 
 > **⚠️ For educational use only.** Do not expose these containers to the public internet.
