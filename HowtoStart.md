@@ -1,53 +1,75 @@
-# How to Start the Pentest Command Center
+# 🔐 VulnLab Command Center — Professional Setup Guide
 
-This guide explains how to quickly start up both the Lab API (backend) and the WebApp (frontend) simultaneously with a single command.
-
----
-
-## 🚀 Option 1: The Quick Start Batch Script (Easiest for Windows)
-
-This is the fastest method to get everything up and running.
-
-1. Open your Windows File Explorer and navigate to `P2_Sec_Application`.
-2. Locate the **`start.bat`** file.
-3. **Double-click** it.
-   - Alternatively, you can open a terminal in the main folder and type `.\start.bat`
-
-**What happens?**
-Two new Command Prompt windows will automatically open. One will run the Lab API (Node.js) and the other will run the WebApp (Next.js).
-
-**To Stop the Application:**
-Simply close both of the new Command Prompt windows that were opened.
+Welcome to the **VulnLab Command Center**. This self-contained, automated security lab is designed for security researchers and penetration testers. This guide will walk you through the **manual** deployment of the entire stack.
 
 ---
 
-## 📦 Option 2: Using NPM (Single Terminal View)
+## 🏛️ Project Vision & Architecture
+The Command Center doesn't just run labs; it *controls* them. It provides a real-time bridge between a modern web dashboard and localized Docker containers.
 
-If you prefer using `npm` and want to see all your logs running in a single, combined terminal, follow these steps.
-
-1. Open a terminal in the main **`P2_Sec_Application`** folder.
-2. Install the required root package (you only need to do this once):
-   ```bash
-   npm install
-   ```
-   *(This installs a package called `concurrently` that helps run both servers together).*
-
-3. Start both applications by running:
-   ```bash
-   npm start
-   ```
-
-**What happens?**
-Both the API and WebApp will boot up within the same terminal window. You’ll be able to tell the logs apart by the prefixes (normally `[start:api]` and `[start:web]`).
-
-**To Stop the Application:**
-Press `Ctrl + C` in your terminal to easily terminate both processes at once.
+```mermaid
+graph LR
+    A[User Dashboard] -->|Next.js| B[Lab Controller API]
+    B -->|Node.js| C[Docker Engine]
+    C -->|Spawns| D[DVWA]
+    C -->|Spawns| E[Juice Shop]
+    C -->|Spawns| F[Databases]
+```
 
 ---
 
-## 🌐 Application URLs
+## 🛠️ Pre-Requisites
+Ensure your workstation is configured with the following before starting:
+- **Node.js**: v20 or newer (Verify with `node -v`)
+- **Docker Desktop**: Installed and running (Verify with `docker ps`)
+- **System**: Windows, macOS, or Linux
 
-Once the applications are successfully started, you can access them at:
+---
 
-- **Frontend Web Application:** [http://localhost:3000](http://localhost:3000)
-- **Labs API Backend:** Starts automatically on the configured backend port (Check your terminal logs or `.env` file for exact API port details).
+## 🚀 Step-by-Step Deployment (Manual)
+
+Follow these steps exactly to bring the dashboard online.
+
+### 1. Initialize the Vulnerable Labs
+Open your terminal in the root of this project and start the Docker containers. This will download and start all 10+ vulnerable targets.
+```bash
+cd lab-api
+npm install
+node server.js
+```
+
+### 3. Launch the Dashboard (Frontend)
+Open a **new terminal window**, navigate to the `webapp` directory, and start the development server.
+```bash
+cd webapp
+npm install
+npm run dev
+```
+
+### 4. Access the Command Center
+Once the frontend starts, open your browser to:
+👉 **[http://localhost:3000](http://localhost:3000)**
+
+---
+
+## 💎 Features Checklist
+- [x] **One-Click Control**: Start/Stop labs via the UI grid.
+- [x] **Live Log Stream**: Real-time terminal output in the browser.
+- [x] **Smart Status Badges**: Dynamic indicators for container health.
+- [x] **Zero-Config Detection**: API automatically finds your `docker-compose.yml`.
+
+---
+
+## 🔧 Troubleshooting
+| Issue | Solution |
+|---|---|
+| **Docker not found** | Ensure Docker Desktop is open and your user has permissions. |
+| **Port 3000 Conflict** | Another process is using port 3000. Run `npm run dev -- -p 3001`. |
+| **API Health Check Failed** | Ensure `lab-api` is running on Port 4100. |
+
+---
+
+> [!NOTE]
+> For production deployments (e.g., VPS), you can still override the `LAB_DIR` and `NEXT_PUBLIC_LAB_API_URL` environment variables in your `.env` or Vercel dashboard.
+
+*Last Updated: 2026*
