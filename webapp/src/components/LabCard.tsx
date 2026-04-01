@@ -91,7 +91,7 @@ export default function LabCard({ lab, onRefresh }: LabCardProps) {
             </div>
 
             <div className="min-w-0">
-              <h2 className="text-base font-bold leading-tight truncate" style={{ color: '#f1f5f9' }}>{lab.name}</h2>
+              <h2 className="text-base font-bold leading-tight" style={{ color: '#f1f5f9' }}>{lab.name}</h2>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md"
                   style={{ background: theme.bg, color: theme.color, border: `1px solid ${theme.border}`, letterSpacing: '0.05em' }}>
