@@ -148,4 +148,4 @@ This project is open to contributions from the security community. If you find a
 
 ---
 
-> 📖 For a detailed walkthrough including architecture, features, and verification checklist, see [HowToStart.md](./HowToStart.md).
+> 📖 For a detailed walkthrough including architecture, features, and verification checklist, see [HowtoStart.md](./HowtoStart.md).
