@@ -8,6 +8,12 @@ Professional web dashboard to manage vulnerable Docker lab containers, APIs, and
 
 ---
 
+> [!WARNING]
+> **For Educational Purposes Only.**
+> This project is intended strictly for learning, research, and authorized security testing in isolated lab environments. The tools and vulnerable applications included here are designed to be exploited — **only within this controlled setup**. Do not use any part of this toolkit against systems you do not own or have explicit written permission to test. Unauthorized use against real systems is illegal and unethical. The maintainers of this repository accept no liability for misuse.
+
+---
+
 ## Quick Start
 
 ### Prerequisites
@@ -121,6 +127,24 @@ vulnlab-quickstart/
 | `docker` not found | Install Docker Desktop and make sure it's running |
 | Port already in use | Stop the conflicting app or change the port in `lab-api/.env` |
 | Dashboard can't connect to API | Make sure Lab API is running on port 4100 |
+
+---
+
+## 🤝 Contributing & Collaboration
+
+This project is open to contributions from the security community. If you find a bug, want to add a new lab application, improve documentation, or suggest a tool — you're very welcome to get involved.
+
+- **Found an issue?** → [Open a GitHub Issue](../../issues/new) — describe the problem, your OS, and steps to reproduce.
+- **Have an improvement?** → [Submit a Pull Request](../../pulls) — fork the repo, make your changes on a new branch, and open a PR with a clear description of what you changed and why.
+- **Have an idea or question?** → Start a [Discussion](../../discussions) to talk it through before building.
+
+**PR guidelines:**
+- Keep changes focused — one feature or fix per PR
+- Update the README if your change affects setup steps or tool lists
+- Test your changes on a clean environment before submitting
+- Be respectful — this is a learning space for everyone
+
+> ⭐ If this project helped you, consider starring the repo — it helps others find it too.
 
 ---
 

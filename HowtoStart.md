@@ -204,6 +204,4 @@ vulnlab-quickstart/
 
 ---
 
-> **Note:** For production deployments (e.g., VPS), you can override the `LAB_DIR` and `NEXT_PUBLIC_LAB_API_URL` environment variables in your `.env` files.
-
 *Last Updated: March 2026*
