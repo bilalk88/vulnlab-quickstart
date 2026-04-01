@@ -188,27 +188,24 @@ function dockerCompose(args) {
   });
 }
 
-async function getContainerStatus(containerId) {
-  return new Promise((resolve) => {
-    execFile(
-      'docker', ['inspect', '--format', '{{.State.Status}}', containerId],
-      (err, stdout) => {
-        if (err) return resolve('stopped');
-        resolve(stdout.trim() || 'stopped');
-      }
-    );
-  });
-}
-
 async function enrichLabsWithStatus(labList) {
-  return Promise.all(
-    labList.map(async (lab) => {
-      if (lab.status === 'external') return lab;
-      const containerName = CONTAINER_NAMES[lab.id] || lab.id;
-      const status = await getContainerStatus(containerName);
-      return { ...lab, status };
-    })
-  );
+  return new Promise((resolve) => {
+    execFile('docker', ['ps', '--format', '{{.Names}}'], (err, stdout) => {
+      if (err) {
+        return resolve(labList.map(lab => ({ ...lab, status: lab.status === 'external' ? 'external' : 'stopped' })));
+      }
+      
+      const runningNames = stdout.split('\n').map(n => n.trim()).filter(Boolean);
+      
+      const enriched = labList.map(lab => {
+        if (lab.status === 'external') return lab;
+        const containerName = CONTAINER_NAMES[lab.id] || lab.id;
+        const isRunning = runningNames.includes(containerName);
+        return { ...lab, status: isRunning ? 'running' : 'stopped' };
+      });
+      resolve(enriched);
+    });
+  });
 }
 
 // ── App setup ─────────────────────────────────────────────────────────────────
@@ -338,7 +335,7 @@ app.get('/api/labs/:id/logs', (req, res) => {
 });
 
 // ── Start server ──────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n🔐 VulnLab API Server`);
   console.log(`   Listening on  : http://localhost:${PORT}`);
   console.log(`   Lab directory : ${LAB_DIR}`);

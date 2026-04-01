@@ -1,7 +1,7 @@
 {
-  "name": "p2_sec_application",
+  "name": "VulnLab-Control-Center",
   "version": "1.0.0",
-  "description": "Pentest Command Center root startup scripts",
+  "description": "VulnLab Control Center root startup scripts",
   "scripts": {
     "install:all": "cd lab-api && npm install && cd ../webapp && npm install",
     "start": "concurrently \"npm run start:api\" \"npm run start:web\"",

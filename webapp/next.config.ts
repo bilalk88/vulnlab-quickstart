@@ -1,10 +1,9 @@
 import type { NextConfig } from "next";
+import os from "os";
+import path from "path";
 
 // Read the API port from the environment so it can be changed in .env.local
-// without touching this file. Defaults to 4100.
 const LAB_API_PORT = process.env.LAB_API_PORT || '4100';
-
-import os from "os";
 
 function getLocalIPs() {
   const ips = ['127.0.0.1', 'localhost'];
@@ -17,9 +16,14 @@ function getLocalIPs() {
   return ips;
 }
 
-// @ts-ignore - allowedDevOrigins is relatively new in Next 15 and might lack TS definitions
 const nextConfig: NextConfig = {
+  // Pin the tracing/output root to webapp/ so Turbopack resolves
+  // node_modules from here instead of the repo root.
+  outputFileTracingRoot: path.join(__dirname),
+
+  // @ts-ignore
   allowedDevOrigins: getLocalIPs(),
+
   async rewrites() {
     return [
       {
